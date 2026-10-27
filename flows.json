@@ -325,7 +325,7 @@
     {
         "id": "6aa61182.b42ed",
         "type": "ui_tab",
-        "name": "Inställningar",
+        "name": "Nastavení",
         "icon": "settings",
         "order": 2,
         "disabled": false,
@@ -334,7 +334,7 @@
     {
         "id": "74cc47a5.9ee208",
         "type": "ui_tab",
-        "name": "Prognosreglering",
+        "name": "Řízení podle předpovědi",
         "icon": "wi-wu-sunny",
         "order": 3,
         "disabled": false,
@@ -343,7 +343,7 @@
     {
         "id": "72d88fa0.a760e",
         "type": "ui_tab",
-        "name": "Inomhusreglering",
+        "name": "Řízení podle vnitřní teploty",
         "icon": "home",
         "order": 4,
         "disabled": false,
@@ -352,7 +352,7 @@
     {
         "id": "57a2c311.41401c",
         "type": "ui_tab",
-        "name": "Automatiskt luftflöde",
+        "name": "Automatický průtok vzduchu",
         "icon": "wi-darksky-tornado",
         "order": 5,
         "disabled": false,
@@ -361,7 +361,7 @@
     {
         "id": "ad3904c7.ceae48",
         "type": "ui_tab",
-        "name": "Elprisreglering",
+        "name": "Cena elektřiny",
         "icon": "flash_on",
         "order": 6,
         "disabled": false,
@@ -377,7 +377,7 @@
     {
         "id": "d814a7db.5cdc38",
         "type": "ui_group",
-        "name": "Uppdateringar",
+        "name": "Aktualizace",
         "tab": "6aa61182.b42ed",
         "order": 1,
         "disp": false,
@@ -387,7 +387,7 @@
     {
         "id": "810e862f.c36438",
         "type": "ui_group",
-        "name": "SMHI",
+        "name": "Předpověď počasí",
         "tab": "74cc47a5.9ee208",
         "order": 3,
         "disp": true,
@@ -397,7 +397,7 @@
     {
         "id": "a2cfe148.70708",
         "type": "ui_group",
-        "name": "Inomhusreglering S1",
+        "name": "Vnitřní teplota S1",
         "tab": "72d88fa0.a760e",
         "order": 1,
         "disp": false,
@@ -407,7 +407,7 @@
     {
         "id": "ad7a33f3.24adf",
         "type": "ui_group",
-        "name": "Automatisk lufthastighet",
+        "name": "Automatické otáčky ventilátoru",
         "tab": "57a2c311.41401c",
         "order": 1,
         "disp": false,
@@ -427,7 +427,7 @@
     {
         "id": "53b18b65.7718c4",
         "type": "ui_group",
-        "name": "Temperaturgraf",
+        "name": "Graf teplot",
         "tab": "72d88fa0.a760e",
         "order": 4,
         "disp": false,
@@ -437,7 +437,7 @@
     {
         "id": "4a7ab836.172ae8",
         "type": "ui_group",
-        "name": "Information",
+        "name": "Informace",
         "tab": "6aa61182.b42ed",
         "order": 8,
         "disp": false,
@@ -458,7 +458,7 @@
     {
         "id": "7e910a08.c6c984",
         "type": "ui_group",
-        "name": "Prognosreglering S1",
+        "name": "Předpověď S1",
         "tab": "74cc47a5.9ee208",
         "order": 2,
         "disp": false,
@@ -468,7 +468,7 @@
     {
         "id": "b561c5cd.249a58",
         "type": "ui_group",
-        "name": "Inställningar Värme",
+        "name": "Nastavení topení",
         "tab": "ad3904c7.ceae48",
         "order": 4,
         "disp": true,
@@ -478,7 +478,7 @@
     {
         "id": "2e9c7d75.ee6312",
         "type": "ui_group",
-        "name": "Inställningar Varmvatten",
+        "name": "Nastavení TUV",
         "tab": "ad3904c7.ceae48",
         "order": 5,
         "disp": false,
@@ -488,7 +488,7 @@
     {
         "id": "f481a5f0.f9f1c8",
         "type": "ui_group",
-        "name": "Inställningar",
+        "name": "Nastavení",
         "tab": "ad3904c7.ceae48",
         "order": 2,
         "disp": false,
@@ -596,7 +596,7 @@
     {
         "id": "d342c0ba.f2418",
         "type": "ui_group",
-        "name": "Solfaktor",
+        "name": "Sluneční faktor",
         "tab": "74cc47a5.9ee208",
         "order": 4,
         "disp": false,
@@ -606,7 +606,7 @@
     {
         "id": "455ba55e.e91e8c",
         "type": "ui_group",
-        "name": "Vindfaktor",
+        "name": "Větrný faktor",
         "tab": "74cc47a5.9ee208",
         "order": 5,
         "disp": false,
@@ -616,7 +616,7 @@
     {
         "id": "88b70b91.66f338",
         "type": "ui_tab",
-        "name": "Lufthastighet",
+        "name": "Otáčky ventilátoru",
         "icon": "wi-darksky-tornado",
         "order": 8,
         "disabled": false,
@@ -641,7 +641,7 @@
     {
         "id": "b75c3bdd.9e0ae8",
         "type": "ui_tab",
-        "name": "Startsida",
+        "name": "Úvod",
         "icon": "dashboard",
         "order": 1,
         "disabled": false,
@@ -650,7 +650,7 @@
     {
         "id": "a8bf2b6e.6abc18",
         "type": "ui_group",
-        "name": "Husinformation",
+        "name": "Informace o domě",
         "tab": "b75c3bdd.9e0ae8",
         "order": 4,
         "disp": false,
@@ -660,7 +660,7 @@
     {
         "id": "197ce413.27432c",
         "type": "ui_group",
-        "name": "Prognosreglering S2",
+        "name": "Předpověď S2",
         "tab": "74cc47a5.9ee208",
         "order": 6,
         "disp": false,
@@ -677,7 +677,7 @@
     {
         "id": "1dc0b5a5.8e56aa",
         "type": "ui_tab",
-        "name": "Datahantering",
+        "name": "Správa dat",
         "icon": "dashboard",
         "order": 10,
         "disabled": false,
@@ -706,7 +706,7 @@
     {
         "id": "33ed6fb8.2f3ce",
         "type": "ui_group",
-        "name": "Inställningar",
+        "name": "Nastavení",
         "tab": "74cc47a5.9ee208",
         "order": 1,
         "disp": false,
@@ -716,7 +716,7 @@
     {
         "id": "fb207b28.da59b8",
         "type": "ui_group",
-        "name": "Extra givare",
+        "name": "Další čidla",
         "tab": "6aa61182.b42ed",
         "order": 2,
         "disp": false,
@@ -726,7 +726,7 @@
     {
         "id": "95b0af9c.89089",
         "type": "ui_group",
-        "name": "Inställningar",
+        "name": "Nastavení",
         "tab": "72d88fa0.a760e",
         "order": 2,
         "disp": false,
@@ -746,7 +746,7 @@
     {
         "id": "1b40f24f.7b6d9e",
         "type": "ui_group",
-        "name": "Elprisreglering S1",
+        "name": "Cena elektřiny S1",
         "tab": "ad3904c7.ceae48",
         "order": 7,
         "disp": false,
@@ -756,7 +756,7 @@
     {
         "id": "94305680.d32c48",
         "type": "ui_group",
-        "name": "Elprisreglering S2",
+        "name": "Cena elektřiny S2",
         "tab": "ad3904c7.ceae48",
         "order": 8,
         "disp": false,
@@ -766,7 +766,7 @@
     {
         "id": "e6946a7.5e1e698",
         "type": "ui_group",
-        "name": "Information",
+        "name": "Informace",
         "tab": "ad3904c7.ceae48",
         "order": 1,
         "disp": false,
@@ -776,7 +776,7 @@
     {
         "id": "6ee1e12a.a6f04",
         "type": "ui_group",
-        "name": "Inomhusreglering S2",
+        "name": "Vnitřní teplota S2",
         "tab": "72d88fa0.a760e",
         "order": 5,
         "disp": false,
@@ -786,7 +786,7 @@
     {
         "id": "da3c0db0.9c6aa",
         "type": "ui_group",
-        "name": "System",
+        "name": "Systém",
         "tab": "6aa61182.b42ed",
         "order": 9,
         "disp": false,
@@ -796,7 +796,7 @@
     {
         "id": "605e2041.0137e",
         "type": "ui_group",
-        "name": "Värmekurva S1",
+        "name": "Topná křivka S1",
         "tab": "6aa61182.b42ed",
         "order": 10,
         "disp": false,
@@ -806,7 +806,7 @@
     {
         "id": "ea24545a.5d7038",
         "type": "ui_group",
-        "name": "Värmekurva S2",
+        "name": "Topná křivka S2",
         "tab": "6aa61182.b42ed",
         "order": 11,
         "disp": false,
@@ -816,7 +816,7 @@
     {
         "id": "958d2405.84c788",
         "type": "ui_tab",
-        "name": "Varmvattenreglering",
+        "name": "Řízení TUV",
         "icon": "hot_tub",
         "order": 11,
         "disabled": false,
@@ -825,7 +825,7 @@
     {
         "id": "bcb5f9e4.9bc858",
         "type": "ui_group",
-        "name": "Automatisk Tillfällig Lyx",
+        "name": "Automatický dočasný luxus",
         "tab": "958d2405.84c788",
         "order": 1,
         "disp": false,
@@ -835,7 +835,7 @@
     {
         "id": "38b6d907.520796",
         "type": "ui_group",
-        "name": "Varmvatten Prioritet",
+        "name": "Priorita TUV",
         "tab": "958d2405.84c788",
         "order": 2,
         "disp": false,
@@ -845,7 +845,7 @@
     {
         "id": "97526682.5406d8",
         "type": "ui_group",
-        "name": "Loggning",
+        "name": "Logování",
         "tab": "6aa61182.b42ed",
         "order": 3,
         "disp": false,
@@ -875,7 +875,7 @@
     {
         "id": "1d61b1b5.3ea93e",
         "type": "ui_group",
-        "name": "Kompressorförbrukning",
+        "name": "Spotřeba kompresoru",
         "tab": "b75c3bdd.9e0ae8",
         "order": 5,
         "disp": false,
@@ -885,7 +885,7 @@
     {
         "id": "fe94277c.dcd118",
         "type": "ui_group",
-        "name": "Avancerat",
+        "name": "Pokročilé",
         "tab": "6aa61182.b42ed",
         "order": 5,
         "disp": true,
@@ -905,7 +905,7 @@
     {
         "id": "6dbad083.a9946",
         "type": "ui_group",
-        "name": "Förbrukning strömavkännare",
+        "name": "Spotřeba podle proudových čidel",
         "tab": "b75c3bdd.9e0ae8",
         "order": 6,
         "disp": true,
@@ -925,7 +925,7 @@
     {
         "id": "b7178cee.09314",
         "type": "ui_group",
-        "name": "Sänk luftflöde",
+        "name": "Snížení průtoku vzduchu",
         "tab": "57a2c311.41401c",
         "order": 2,
         "disp": false,
@@ -935,7 +935,7 @@
     {
         "id": "2ed5a2d7.ca08ce",
         "type": "ui_group",
-        "name": "Forcering luftflöde",
+        "name": "Posílení průtoku vzduchu",
         "tab": "57a2c311.41401c",
         "order": 3,
         "disp": false,
@@ -945,7 +945,7 @@
     {
         "id": "7c351fda.75426",
         "type": "ui_group",
-        "name": "Filterrengöring",
+        "name": "Čištění filtru",
         "tab": "57a2c311.41401c",
         "order": 4,
         "disp": false,
@@ -978,7 +978,7 @@
     {
         "id": "da1887c7.ca0d38",
         "type": "ui_group",
-        "name": "Förord",
+        "name": "Úvod",
         "tab": "b75c3bdd.9e0ae8",
         "order": 1,
         "disp": false,
@@ -988,7 +988,7 @@
     {
         "id": "c400f9d6.0a6028",
         "type": "ui_tab",
-        "name": "Diagnostik",
+        "name": "Diagnostika",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
@@ -996,7 +996,7 @@
     {
         "id": "3af8f7e6.d24338",
         "type": "ui_group",
-        "name": "Kompressoreffektivitet",
+        "name": "Účinnost kompresoru",
         "tab": "c400f9d6.0a6028",
         "order": 1,
         "disp": true,
@@ -1006,7 +1006,7 @@
     {
         "id": "ffc74889.8cb7c8",
         "type": "ui_group",
-        "name": "Gradminut boost",
+        "name": "Boost podle stupeňminut",
         "tab": "57a2c311.41401c",
         "order": 5,
         "disp": false,
@@ -1044,7 +1044,7 @@
     {
         "id": "8a26f223.5a5ad",
         "type": "ui_group",
-        "name": "Inställningar Pool",
+        "name": "Nastavení bazénu",
         "tab": "ad3904c7.ceae48",
         "order": 10,
         "disp": false,
@@ -1065,7 +1065,7 @@
     {
         "id": "ff52e56c57bb5d49",
         "type": "ui_group",
-        "name": "Prioriterad tillsats",
+        "name": "Prioritní dotop",
         "tab": "ad3904c7.ceae48",
         "order": 11,
         "disp": false,
@@ -1076,7 +1076,7 @@
     {
         "id": "4f8b35d1.5c8fec",
         "type": "ui_group",
-        "name": "Registerhantering",
+        "name": "Správa registrů",
         "tab": "1dc0b5a5.8e56aa",
         "order": 1,
         "disp": false,
@@ -1086,7 +1086,7 @@
     {
         "id": "1409f0ed.f2d6cf",
         "type": "ui_group",
-        "name": "Automatisk lufthastighet",
+        "name": "Automatické otáčky ventilátoru",
         "tab": "88b70b91.66f338",
         "order": 1,
         "disp": true,
@@ -1106,7 +1106,7 @@
     {
         "id": "4aaf21c9.38fb8",
         "type": "ui_group",
-        "name": "Data Export",
+        "name": "Export dat",
         "tab": "f3ab33ed.96488",
         "order": 1,
         "disp": true,
@@ -1134,7 +1134,7 @@
     {
         "id": "d342f8a5987ee638",
         "type": "ui_tab",
-        "name": "Varmvatten Lärande AI",
+        "name": "TUV – učící se AI",
         "icon": "fa-tint",
         "order": 12,
         "disabled": false,
@@ -1143,7 +1143,7 @@
     {
         "id": "5695785330febbb8",
         "type": "ui_group",
-        "name": "VV Ai Extra",
+        "name": "VV-AI navíc",
         "tab": "d342f8a5987ee638",
         "order": 4,
         "disp": true,
@@ -1154,7 +1154,7 @@
     {
         "id": "cf2847ec068da4d4",
         "type": "ui_group",
-        "name": "VV-Ai elprisjusteringar",
+        "name": "VV-AI a cena elektřiny",
         "tab": "d342f8a5987ee638",
         "order": 3,
         "disp": true,
@@ -1165,7 +1165,7 @@
     {
         "id": "a2ad832cfe72c37c",
         "type": "ui_group",
-        "name": "Tidsstyrning För VV.",
+        "name": "Časové řízení TUV",
         "tab": "d342f8a5987ee638",
         "order": 5,
         "disp": true,
@@ -1176,7 +1176,7 @@
     {
         "id": "b5e11713367ebe3c",
         "type": "ui_group",
-        "name": "VV Lärande",
+        "name": "Učení TUV",
         "tab": "d342f8a5987ee638",
         "order": 1,
         "disp": false,
@@ -1236,7 +1236,7 @@
     {
         "id": "c4e7b2a9d1f3e002",
         "type": "ui_group",
-        "name": "Inställningar VV-AI",
+        "name": "Nastavení VV-AI",
         "tab": "d342f8a5987ee638",
         "order": 2,
         "disp": false,
@@ -1247,7 +1247,7 @@
     {
         "id": "d3cce759",
         "type": "ui_group",
-        "name": "Prisinställningar",
+        "name": "Nastavení cen",
         "tab": "ad3904c7.ceae48",
         "order": 3,
         "disp": false,
@@ -1720,7 +1720,7 @@
         "order": 0,
         "width": 0,
         "height": 0,
-        "format": "<style>\n    var redirect = function() {\n    window.location.href = \"/files/nibepi.log\";\n    }\n</style>\n<div>\n\n<button onclick=\"redirect()\">Download</button>\n\n<div class=\"my_content_container\">\n    <a href=\"/files/nibepi.log\">Ladda ner logg</a>\n</div>\n    <a href=\"/files/config.json\">Download Config file</a>\n</div>\n\n    <style type=\"text/css\">\n.my_content_container a {\n    border-bottom: 1px solid #555555;\n    border-left: 1px solid #555555;\n    border-right: 1px solid #555555;\n    border-top: 1px solid #555555;\n    background: #a80202;\n    color: #FFFFFF;\n    display: block;\n    height: 2.5em;\n    padding: 0 1em;\n    width: 10em;       \n    text-decoration: \"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif\";\n}\n// :hover and :active styles left as an exercise for the reader.\n</style>",
+        "format": "<style>\n    var redirect = function() {\n    window.location.href = \"/files/nibepi.log\";\n    }\n</style>\n<div>\n\n<button onclick=\"redirect()\">Download</button>\n\n<div class=\"my_content_container\">\n    <a href=\"/files/nibepi.log\">Stáhnout log</a>\n</div>\n    <a href=\"/files/config.json\">Download Config file</a>\n</div>\n\n    <style type=\"text/css\">\n.my_content_container a {\n    border-bottom: 1px solid #555555;\n    border-left: 1px solid #555555;\n    border-right: 1px solid #555555;\n    border-top: 1px solid #555555;\n    background: #a80202;\n    color: #FFFFFF;\n    display: block;\n    height: 2.5em;\n    padding: 0 1em;\n    width: 10em;       \n    text-decoration: \"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif\";\n}\n// :hover and :active styles left as an exercise for the reader.\n</style>",
         "storeOutMessages": false,
         "fwdInMessages": true,
         "templateScope": "local",
@@ -1769,7 +1769,7 @@
         "width": 0,
         "height": 0,
         "passthru": false,
-        "label": "Ladda ner logg",
+        "label": "Stáhnout log",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
@@ -3011,7 +3011,7 @@
         "type": "function",
         "z": "b7f67da0.fbf1",
         "name": "",
-        "func": "if(msg.cpr_tot_kwh!==undefined && msg.cpr_tot_kwh!==0) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Startsida_Kompressorförbrukning\"]\n            }\n        }\n    node.send([null,null,{payload:hide}]);\n    node.send({topic:\"Värme\",payload:Number((msg.cpr_tot_kwh-msg.cpr_hw_kwh).toFixed(0))});\n    node.send([null,{topic:\"Varmvatten\",payload:Number(msg.cpr_hw_kwh.toFixed(0))}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Startsida_Kompressorförbrukning\"]\n            }\n        }\n    node.send([null,null,{payload:hide}]);\n}\n",
+        "func": "if(msg.cpr_tot_kwh!==undefined && msg.cpr_tot_kwh!==0) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Úvod_Spotřeba_kompresoru\"]\n            }\n        }\n    node.send([null,null,{payload:hide}]);\n    node.send({topic:\"Värme\",payload:Number((msg.cpr_tot_kwh-msg.cpr_hw_kwh).toFixed(0))});\n    node.send([null,{topic:\"Varmvatten\",payload:Number(msg.cpr_hw_kwh.toFixed(0))}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Úvod_Spotřeba_kompresoru\"]\n            }\n        }\n    node.send([null,null,{payload:hide}]);\n}\n",
         "outputs": 3,
         "noerr": 0,
         "x": 918,
@@ -3102,7 +3102,7 @@
         "type": "function",
         "z": "b7f67da0.fbf1",
         "name": "Startsida",
-        "func": "if(msg.name==\"Startsida\") {\n    return msg;\n}",
+        "func": "if(msg.name==\"Úvod\") {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 277,
@@ -3208,7 +3208,7 @@
         "type": "function",
         "z": "b7f67da0.fbf1",
         "name": "Inställningar",
-        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Inställningar\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
+        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Nastavení\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 434,
@@ -3368,7 +3368,7 @@
         "type": "ui_text_input",
         "z": "b7f67da0.fbf1",
         "name": "",
-        "label": "User",
+        "label": "Uživatel",
         "tooltip": "",
         "group": "723a0250.fd7dcc",
         "order": 7,
@@ -3444,7 +3444,7 @@
         "type": "ui_text_input",
         "z": "b7f67da0.fbf1",
         "name": "",
-        "label": "Password",
+        "label": "Heslo",
         "tooltip": "",
         "group": "723a0250.fd7dcc",
         "order": 8,
@@ -3821,7 +3821,7 @@
         "type": "function",
         "z": "b7f67da0.fbf1",
         "name": "Datahantering",
-        "func": "if(msg.name==\"Datahantering\") {\n    return msg;\n}",
+        "func": "if(msg.name==\"Správa dat\") {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3938,13 +3938,13 @@
                 "required": false
             },
             {
-                "label": "Name",
+                "label": "Název",
                 "value": "name",
                 "type": "text",
                 "required": true
             },
             {
-                "label": "Register / Topic",
+                "label": "Registr / topic",
                 "value": "topic",
                 "type": "text",
                 "required": true
@@ -4123,7 +4123,7 @@
         "type": "function",
         "z": "b7f67da0.fbf1",
         "name": "Inställningar",
-        "func": "if(msg.name==\"Inställningar\") {\n    return msg;\n}",
+        "func": "if(msg.name==\"Nastavení\") {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 371,
@@ -4178,20 +4178,20 @@
         "type": "ui_form",
         "z": "b7f67da0.fbf1",
         "name": "",
-        "label": "Send value",
+        "label": "Odeslat hodnotu",
         "group": "bd199d65.157fc",
         "order": 4,
         "width": 0,
         "height": 0,
         "options": [
             {
-                "label": "Register",
+                "label": "Registr",
                 "value": "register",
                 "type": "number",
                 "required": true
             },
             {
-                "label": "Value",
+                "label": "Hodnota",
                 "value": "value",
                 "type": "number",
                 "required": true
@@ -4305,7 +4305,7 @@
         "type": "function",
         "z": "b7f67da0.fbf1",
         "name": "Enable/Disable",
-        "func": "if(msg.payload<=-3275) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Inställningar_Värmekurva_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Inställningar_Värmekurva_S2\"]\n            }\n        }\n    node.send([msg,{payload:hide}]);\n}",
+        "func": "if(msg.payload<=-3275) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Nastavení_Topná_křivka_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Nastavení_Topná_křivka_S2\"]\n            }\n        }\n    node.send([msg,{payload:hide}]);\n}",
         "outputs": 2,
         "noerr": 0,
         "x": 367,
@@ -5000,8 +5000,8 @@
         "type": "ui_text_input",
         "z": "b7f67da0.fbf1",
         "name": "",
-        "label": "Kör kommando",
-        "tooltip": "Skriv ett kommando. Återkoppling i rutan nedan",
+        "label": "Spustit příkaz",
+        "tooltip": "Zadejte příkaz. Výstup se zobrazí v poli níže",
         "group": "fe94277c.dcd118",
         "order": 2,
         "width": 0,
@@ -5952,6 +5952,11 @@
             {
                 "label": "Deutsch",
                 "value": "DE",
+                "type": "str"
+            },
+            {
+                "label": "Čeština",
+                "value": "CZ",
                 "type": "str"
             }
         ],
@@ -8067,7 +8072,7 @@
         "order": 1,
         "width": 0,
         "height": 0,
-        "format": "<p>\n    Här går det att köra enkla SSH kommandon på NibePi.<br>\n</p>",
+        "format": "<p>\n    Zde lze na NibePi spouštět jednoduché příkazy shellu.<br>\n</p>",
         "storeOutMessages": true,
         "fwdInMessages": true,
         "templateScope": "local",
@@ -8215,7 +8220,7 @@
         "multiple": false,
         "options": [
             {
-                "label": "Ingen",
+                "label": "Žádné",
                 "value": "null",
                 "type": "str"
             },
@@ -8928,8 +8933,8 @@
         "width": "12",
         "height": "1",
         "passthru": false,
-        "label": "Uppdatera",
-        "tooltip": "Begär ny väderdata och uppdatera grafen med nya värden.",
+        "label": "Aktualizovat",
+        "tooltip": "Načte nová data o počasí a aktualizuje graf.",
         "color": "",
         "bgcolor": "",
         "icon": "",
@@ -9000,7 +9005,7 @@
         "type": "ui_slider",
         "z": "df0dd648.98daa8",
         "name": "",
-        "label": "Prognostid",
+        "label": "Doba předpovědi",
         "tooltip": "",
         "group": "197ce413.27432c",
         "order": 3,
@@ -9051,7 +9056,7 @@
         "type": "function",
         "z": "df0dd648.98daa8",
         "name": "Enable/Disable",
-        "func": "if(msg.enabled!==undefined && msg.enabled===false) {\n    node.send(msg);\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Prognosreglering_Prognosreglering_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===true) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Prognosreglering_Prognosreglering_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
+        "func": "if(msg.enabled!==undefined && msg.enabled===false) {\n    node.send(msg);\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Řízení_podle_předpovědi_Předpověď_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===true) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Řízení_podle_předpovědi_Předpověď_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -9358,7 +9363,7 @@
         "type": "function",
         "z": "df0dd648.98daa8",
         "name": "Prognosreglering",
-        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Prognosreglering\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
+        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Řízení podle předpovědi\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 860,
@@ -10543,7 +10548,7 @@
         "type": "function",
         "z": "358baec9.c8b902",
         "name": "Inomhusreglering",
-        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Inomhusreglering\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
+        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Řízení podle vnitřní teploty\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 272,
@@ -11113,7 +11118,7 @@
         "z": "358baec9.c8b902",
         "name": "Faktor för Inomhusgivare",
         "label": "{{msg.label}}",
-        "tooltip": "Ställ in hur mycket inomhus givare ska påverka framledningstemperaturen.",
+        "tooltip": "Nastavte, jak moc má vnitřní čidlo ovlivňovat teplotu topné vody.",
         "group": "6ee1e12a.a6f04",
         "order": 7,
         "width": "0",
@@ -11181,7 +11186,7 @@
         "type": "function",
         "z": "358baec9.c8b902",
         "name": "Inomhusreglering",
-        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Inomhusreglering\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
+        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Řízení podle vnitřní teploty\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 251,
@@ -11309,8 +11314,8 @@
         "width": "12",
         "height": "1",
         "passthru": false,
-        "label": "Uppdatera",
-        "tooltip": "Begär ny data och uppdatera grafen med nya värden.",
+        "label": "Aktualizovat",
+        "tooltip": "Načte nová data a aktualizuje graf.",
         "color": "",
         "bgcolor": "",
         "icon": "",
@@ -11584,7 +11589,7 @@
         "type": "function",
         "z": "358baec9.c8b902",
         "name": "Enable/Disable",
-        "func": "if(msg.enabled!==undefined && msg.enabled===false) {\n    node.send(msg);\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Inomhusreglering_Inomhusreglering_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===true) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Inomhusreglering_Inomhusreglering_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
+        "func": "if(msg.enabled!==undefined && msg.enabled===false) {\n    node.send(msg);\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Řízení_podle_vnitřní_teploty_Vnitřní_teplota_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===true) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Řízení_podle_vnitřní_teploty_Vnitřní_teplota_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -12834,7 +12839,7 @@
         "type": "function",
         "z": "ae9d7ce8.0991c",
         "name": "Lufthastighet",
-        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Automatiskt luftflöde\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
+        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Automatický průtok vzduchu\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 280,
@@ -12996,7 +13001,7 @@
         "type": "function",
         "z": "ae9d7ce8.0991c",
         "name": "Enable/Disable",
-        "func": "if(msg.enabled!==undefined && msg.enabled===false) {\n    node.send(msg);\n    let hide = {\n        \"tabs\":\n            {\"hide\":\n                [\"Lufthastighet\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===true) {\n    let hide = {\n        \"tabs\":\n            {\"show\":\n                [\"Lufthastighet\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
+        "func": "if(msg.enabled!==undefined && msg.enabled===false) {\n    node.send(msg);\n    let hide = {\n        \"tabs\":\n            {\"hide\":\n                [\"Otáčky ventilátoru\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===true) {\n    let hide = {\n        \"tabs\":\n            {\"show\":\n                [\"Otáčky ventilátoru\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
         "outputs": 2,
         "noerr": 0,
         "x": 1116,
@@ -14249,7 +14254,7 @@
         "type": "ui_switch",
         "z": "960078e.e3e6d88",
         "name": "",
-        "label": "NibePis Elprisreglering",
+        "label": "Řízení podle ceny od NibePi",
         "tooltip": "",
         "group": "f481a5f0.f9f1c8",
         "order": 4,
@@ -14293,7 +14298,7 @@
         "multiple": false,
         "options": [
             {
-                "label": "Ekonomi (0)",
+                "label": "Economy (0)",
                 "value": "0",
                 "type": "str"
             },
@@ -14303,7 +14308,7 @@
                 "type": "str"
             },
             {
-                "label": "Lyx (2)",
+                "label": "Luxury (2)",
                 "value": "2",
                 "type": "str"
             }
@@ -14335,7 +14340,7 @@
         "passthru": false,
         "options": [
             {
-                "label": "Ekonomi (0)",
+                "label": "Economy (0)",
                 "value": "0",
                 "type": "str"
             },
@@ -14345,7 +14350,7 @@
                 "type": "str"
             },
             {
-                "label": "Lyx (2)",
+                "label": "Luxury (2)",
                 "value": "2",
                 "type": "str"
             }
@@ -14375,7 +14380,7 @@
         "passthru": false,
         "options": [
             {
-                "label": "Ekonomi (0)",
+                "label": "Economy (0)",
                 "value": "0",
                 "type": "str"
             },
@@ -14385,7 +14390,7 @@
                 "type": "str"
             },
             {
-                "label": "Lyx (2)",
+                "label": "Luxury (2)",
                 "value": "2",
                 "type": "str"
             }
@@ -14416,7 +14421,7 @@
         "multiple": false,
         "options": [
             {
-                "label": "Ekonomi (0)",
+                "label": "Economy (0)",
                 "value": "0",
                 "type": "str"
             },
@@ -14426,7 +14431,7 @@
                 "type": "str"
             },
             {
-                "label": "Lyx (2)",
+                "label": "Luxury (2)",
                 "value": "2",
                 "type": "str"
             }
@@ -14563,7 +14568,7 @@
         "type": "function",
         "z": "960078e.e3e6d88",
         "name": "Elprisreglering",
-        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Elprisreglering\") {\n    if(time>timeSaved) {\n        context.set('time',(time+60000));\n        return msg;\n    }\n}",
+        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Cena elektřiny\") {\n    if(time>timeSaved) {\n        context.set('time',(time+60000));\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -14602,7 +14607,7 @@
         "type": "ui_switch",
         "z": "960078e.e3e6d88",
         "name": "",
-        "label": "Nibes Elprisreglering",
+        "label": "Řízení podle ceny od Nibe",
         "tooltip": "",
         "group": "f481a5f0.f9f1c8",
         "order": 3,
@@ -14659,7 +14664,7 @@
         "type": "ui_dropdown",
         "z": "960078e.e3e6d88",
         "name": "",
-        "label": "Datasource",
+        "label": "Zdroj cen",
         "tooltip": "",
         "place": "Choose source",
         "group": "f481a5f0.f9f1c8",
@@ -14682,6 +14687,11 @@
             {
                 "label": "Elprisetjustnu.se",
                 "value": "priceai",
+                "type": "str"
+            },
+            {
+                "label": "Home Assistant (MQTT)",
+                "value": "mqtt_ha",
                 "type": "str"
             }
         ],
@@ -14999,7 +15009,7 @@
         "passthru": false,
         "options": [
             {
-                "label": "Ekonomi (0)",
+                "label": "Economy (0)",
                 "value": "0",
                 "type": "str"
             },
@@ -15009,7 +15019,7 @@
                 "type": "str"
             },
             {
-                "label": "Lyx (2)",
+                "label": "Luxury (2)",
                 "value": "2",
                 "type": "str"
             }
@@ -15423,7 +15433,7 @@
         "type": "function",
         "z": "960078e.e3e6d88",
         "name": "Enable/Disable Source",
-        "func": "let source = msg.payload.price.source;\nif(source==\"tibber\" || source==\"priceai\") {\n    msg = {\n    enabled:true\n};\nreturn msg;\n} else if(source==\"nibe\") {\n    msg = {\n    enabled:false\n};\nreturn msg;\n}\n",
+        "func": "let source = msg.payload.price.source;\nif(source==\"tibber\" || source==\"priceai\" || source==\"mqtt_ha\") {\n    msg = {\n    enabled:true\n};\nreturn msg;\n} else if(source==\"nibe\") {\n    msg = {\n    enabled:false\n};\nreturn msg;\n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -15448,7 +15458,7 @@
         "type": "function",
         "z": "960078e.e3e6d88",
         "name": "Enable/Disable",
-        "func": "\nif (msg.enabled !== undefined && msg.enabled === false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Elprisreglering_Graf_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Elprisreglering_Graf_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
+        "func": "\nif (msg.enabled !== undefined && msg.enabled === false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Cena_elektřiny_Graf_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Cena_elektřiny_Graf_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
         "outputs": 2,
         "timeout": "",
         "noerr": 0,
@@ -16001,8 +16011,8 @@
         "width": 12,
         "height": 1,
         "passthru": false,
-        "label": "Uppdatera",
-        "tooltip": "Begär ny data och uppdatera med nya värden.",
+        "label": "Aktualizovat",
+        "tooltip": "Načte nová data a aktualizuje hodnoty.",
         "color": "",
         "bgcolor": "",
         "icon": "",
@@ -18761,7 +18771,7 @@
         "type": "function",
         "z": "960078e.e3e6d88",
         "name": "Enable/Disable",
-        "func": "\nif(msg.enabled!==undefined && msg.enabled===false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Elprisreglering_Elprisreglering_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Elprisreglering_Elprisreglering_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
+        "func": "\nif(msg.enabled!==undefined && msg.enabled===false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Cena_elektřiny_Cena_elektřiny_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Cena_elektřiny_Cena_elektřiny_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -20808,7 +20818,7 @@
         "type": "function",
         "z": "eee76599.b5f0d8",
         "name": "Inställningar",
-        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Inställningar\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
+        "func": "var timeSaved = context.get('time')||(Date.now()-1000);\nvar time = Date.now();\nif(msg.name==\"Nastavení\") {\n    if(time>timeSaved) {\n        context.set('time',(time+30000));\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 294,
@@ -20859,7 +20869,7 @@
         "type": "ui_dropdown",
         "z": "eee76599.b5f0d8",
         "name": "",
-        "label": "Välj Inomhusgivare",
+        "label": "Vyberte vnitřní čidlo",
         "tooltip": "",
         "place": "Välj",
         "group": "ef983ace.21f138",
@@ -20969,7 +20979,7 @@
         "type": "ui_dropdown",
         "z": "eee76599.b5f0d8",
         "name": "",
-        "label": "Välj Inomhusgivare",
+        "label": "Vyberte vnitřní čidlo",
         "tooltip": "",
         "place": "Välj",
         "group": "32b15b25.77ef94",
@@ -21063,7 +21073,7 @@
         "type": "function",
         "z": "eee76599.b5f0d8",
         "name": "Enable/Disable",
-        "func": "if(msg.enabled!==undefined && msg.enabled===true) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Inställningar_RMU40_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Inställningar_RMU40_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
+        "func": "if(msg.enabled!==undefined && msg.enabled===true) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Nastavení_RMU40_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Nastavení_RMU40_S2\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
         "outputs": 2,
         "noerr": 0,
         "x": 913,
@@ -21302,7 +21312,7 @@
         "type": "function",
         "z": "eee76599.b5f0d8",
         "name": "Enable/Disable",
-        "func": "if(msg.enabled!==undefined && msg.enabled===true) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Inställningar_RMU40_S1\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Inställningar_RMU40_S1\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
+        "func": "if(msg.enabled!==undefined && msg.enabled===true) {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Nastavení_RMU40_S1\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else if(msg.enabled===false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Nastavení_RMU40_S1\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
         "outputs": 2,
         "noerr": 0,
         "x": 990,
@@ -21470,7 +21480,7 @@
         "order": 2,
         "width": 0,
         "height": 0,
-        "label": "Drifttider",
+        "label": "Doby provozu",
         "chartType": "line",
         "legend": "true",
         "xformat": "dd HH:mm",
@@ -21544,7 +21554,7 @@
         "type": "ui_slider",
         "z": "27236b7a.3c2274",
         "name": "",
-        "label": "Tid",
+        "label": "Čas",
         "tooltip": "",
         "group": "3af8f7e6.d24338",
         "order": 3,
@@ -21569,7 +21579,7 @@
         "type": "function",
         "z": "27236b7a.3c2274",
         "name": "Enable/Disable",
-        "func": "if(msg.enabled===false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Diagnostik_Kompressoreffektivitet\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Diagnostik_Kompressoreffektivitet\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
+        "func": "if(msg.enabled===false) {\n    let hide = {\n        \"group\":\n            {\"hide\":\n                [\"Diagnostika_Účinnost_kompresoru\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n} else {\n    let hide = {\n        \"group\":\n            {\"show\":\n                [\"Diagnostika_Účinnost_kompresoru\"]\n            }\n        }\n    node.send([null,{payload:hide}]);\n}",
         "outputs": 2,
         "noerr": 0,
         "x": 794,
@@ -21636,7 +21646,7 @@
         "type": "ui_slider",
         "z": "27236b7a.3c2274",
         "name": "",
-        "label": "Dagar",
+        "label": "Dny",
         "tooltip": "",
         "group": "3af8f7e6.d24338",
         "order": 8,
@@ -21665,7 +21675,7 @@
         "order": 4,
         "width": 0,
         "height": 0,
-        "label": "Effektivitet",
+        "label": "Účinnost",
         "chartType": "pie",
         "legend": "true",
         "xformat": "dd HH:mm",
@@ -23241,7 +23251,7 @@
         "type": "ui_text_input",
         "z": "c02d27f2.9062e8",
         "name": "",
-        "label": "User",
+        "label": "Uživatel",
         "tooltip": "",
         "group": "ba16c95d.cad528",
         "order": 5,
@@ -23319,7 +23329,7 @@
         "type": "ui_text_input",
         "z": "c02d27f2.9062e8",
         "name": "",
-        "label": "Password",
+        "label": "Heslo",
         "tooltip": "",
         "group": "ba16c95d.cad528",
         "order": 6,
@@ -25649,7 +25659,7 @@
         "order": 7,
         "width": 0,
         "height": 0,
-        "label": "VV Ai- Veckograf",
+        "label": "VV-AI – týdenní graf",
         "chartType": "line",
         "legend": "true",
         "xformat": "dd HH:mm",
@@ -26326,7 +26336,7 @@
         "multiple": false,
         "options": [
             {
-                "label": "Ingen VV (av)",
+                "label": "Bez TUV (vypnuto)",
                 "value": 0,
                 "type": "num"
             },
