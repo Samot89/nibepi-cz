@@ -75,9 +75,15 @@ Prices are compared with `<`: below `very_cheap` is VERY_CHEAP, below `expensive
 is EXPENSIVE, anything higher is VERY_EXPENSIVE. The curve offset for each level
 comes from the usual `heat_*_s1` settings.
 
-⚠️ `mqtt_ha` is not offered in the dashboard's price source dropdown. Choosing
-any source there overwrites it; set it in `config.json` with the container
-stopped.
+The source can also be picked in the dashboard (Price → Datasource →
+"Home Assistant (MQTT)"). The thresholds are set in `config.json` only; edit it
+with the container stopped, as NibePi writes its in-memory config back.
+
+## Czech dashboard
+
+Settings → Language → **Čeština**. Setting labels and help texts follow the
+selected language; tab and group names, which upstream had in Swedish only, are
+in Czech. Log messages from the core are still in Swedish.
 
 ---
 

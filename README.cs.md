@@ -116,9 +116,16 @@ NORMAL, pod `expensive` EXPENSIVE a cokoliv vyššího VERY_EXPENSIVE. Podle
 hladiny se posune topná křivka o hodnotu `heat_*_s1`. Když cena v MQTT chybí,
 posun se vrátí na 0 a TUV na Normal.
 
-⚠️ **Zdroj `mqtt_ha` není v nabídce na stránce cen v dashboardu.** Když tam
-vyberete jakýkoli zdroj, `mqtt_ha` se přepíše. Měňte ho jen v `config.json`
-při zastaveném kontejneru (`sudo docker stop nibepi`).
+Zdroj jde zvolit i v dashboardu: Cena elektřiny → Zdroj cen → **Home Assistant (MQTT)**.
+Prahy hladin se nastavují jen v `config.json`. Upravujte ho při zastaveném
+kontejneru (`sudo docker stop nibepi`), jinak NibePi změny přepíše hodnotami
+z paměti.
+
+## Čeština v dashboardu
+
+Nastavení → Jazyk → **Čeština**. Popisky a nápovědy v nastavení se řídí
+zvoleným jazykem. Názvy záložek a skupin, které byly v originálu jen švédsky,
+jsou česky. Hlášení v logu z jádra NibePi zůstávají švédsky.
 
 ## Aktualizace z upstreamu
 
