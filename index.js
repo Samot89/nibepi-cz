@@ -1573,6 +1573,16 @@ const removeSensor = (data) => {
         }
     }
 }
+// Subscribe an extra MQTT topic (e.g. the HA spot price for price.source "mqtt_ha").
+// updateSensors() re-subscribes everything in mqtt_subcribers after a (re)connect.
+const subscribeMQTT = (topic) => {
+    if(mqtt_subcribers.indexOf(topic) === -1) {
+        mqtt_subcribers.push(topic);
+    }
+    if(mqtt_client!==undefined && mqtt_client.connected===true) {
+        mqtt_client.subscribe(topic);
+    }
+}
 const getMQTTData = (data) => {
     const promise = new Promise((resolve,reject) => {
         if(data!==undefined) data = data.replace(/\//g,"_");
@@ -1624,6 +1634,7 @@ module.exports = {
     addSensor: addSensor,
     removeSensor: removeSensor,
     getMQTTData:getMQTTData,
+    subscribeMQTT:subscribeMQTT,
     log:writeLog,
     saveGraph:saveGraph,
     requireGraph:requireGraph,
