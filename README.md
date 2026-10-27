@@ -2,6 +2,13 @@
 
 Node-RED nodes for NibePi, an interface to Nibe F-series heat pumps.
 
+> **CZ fork (Samot89)** of [fnordpojk/node-red-contrib-nibepi](https://github.com/fnordpojk/node-red-contrib-nibepi),
+> which continues [anerdins/node-red-contrib-nibepi](https://github.com/anerdins/node-red-contrib-nibepi).
+> Adds `price.source: "mqtt_ha"` (price in CZK/kWh and PV surplus from Home
+> Assistant over MQTT) and an Open-Meteo weather forecast in place of SMHI.
+> Setup and configuration: [Samot89/nibepi-docker](https://github.com/Samot89/nibepi-docker)
+> ([česky](https://github.com/Samot89/nibepi-docker/blob/main/README.cs.md)).
+
 This fork combines work from three repositories. None of the upstream authors
 are involved in it, and none of them should be asked to support it.
 
