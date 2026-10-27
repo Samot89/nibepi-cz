@@ -1,0 +1,210 @@
+{
+  "version": "1.2",
+  "registers": [
+    40013,
+    40033,
+    10001,
+    10020,
+    10011,
+    10012,
+    10021,
+    10022,
+    47010,
+    47394,
+    47393,
+    10060,
+    "40008",
+    "40067",
+    "44055",
+    "44058",
+    "44061",
+    "44362",
+    "44457",
+    "44703",
+    "47007",
+    "43081",
+    "44775",
+    "43009",
+    "40072",
+    "47054",
+    "47398",
+    "47137",
+    "40185",
+    "43005",
+    "47041",
+    "47206",
+    "48981",
+    "44897",
+    "44896",
+    "40012",
+    "44059",
+    "43514",
+    40004,
+    "48132",
+    47011,
+    "47047",
+    "47043",
+    "40014"
+  ],
+  "connection": {
+    "enable": "serial",
+    "series": "fSeries"
+  },
+  "tcp": {
+    "pump": "",
+    "host": "",
+    "port": ""
+  },
+  "serial": {
+    "port": "/dev/ttyAMA0"
+  },
+  "update": {
+    "version": "1.2.1"
+  },
+  "home": {
+    "adjust_s1": 0,
+    "adjust_s2": 0,
+    "inside_sensors": [
+      {
+        "name": "Indoor temperature",
+        "register": "homeassistant/sensor/indoor_temperature/state",
+        "source": "mqtt"
+      }
+    ],
+    "lat": "50.0755",
+    "lon": "14.4378",
+    "size": 90,
+    "hours_s1": 8
+  },
+  "mqtt": {
+    "enable": true,
+    "host": "192.168.1.10",
+    "port": "1883",
+    "user": "nibepi",
+    "pass": "CHANGE_ME",
+    "topic": "nibe/modbus/",
+    "discovery": true
+  },
+  "system": {
+    "readonly": false,
+    "language": "EN",
+    "pump": "VVM320",
+    "firmware": 9700,
+    "auto_update": true
+  },
+  "hotwater": {
+    "enable_autoluxury": false,
+    "diff": 20,
+    "time": 10,
+    "enable_hw_priority": false
+  },
+  "log": {
+    "enable": false,
+    "info": false,
+    "core": false,
+    "debug": true,
+    "error": true,
+    "price": true
+  },
+  "indoor": {
+    "enable_s1": true,
+    "dm_reset_enable": false,
+    "dm_reset_enable_stop": false,
+    "dm_reset_stop_diff": 0.5,
+    "dm_reset_slow_diff": 0.3,
+    "sensor_s1": "Indoor temperature",
+    "dm_reset_value": -200
+  },
+  "fan": {
+    "co2_limit": 800,
+    "low_cpr_freq": 40
+  },
+  "plejd": {
+    "host": "127.0.0.1",
+    "port": "1883"
+  },
+  "price": {
+    "enable": true,
+    "source": "mqtt_ha",
+    "time": 8,
+    "time_hw": 12,
+    "min_spread": 20,
+    "area": "SYS",
+    "token": "",
+    "hw_speed": 20,
+    "temp_low_s1": -0.5,
+    "pool_enable_s1": false,
+    "VERY_CHEAP_POOL_HEAT": 0,
+    "CHEAP_POOL_HEAT": 0,
+    "NORMAL_START_POOL_HEAT": 28,
+    "NORMAL_STOP_POOL_HEAT": 32,
+    "EXPENSIVE_POOL_HEAT": 0,
+    "VERY_EXPENSIVE_POOL_HEAT": 0,
+    "VERY_CHEAP_POOL_CPR": 0,
+    "CHEAP_POOL_CPR": 0,
+    "NORMAL_START_POOL_CPR": 0,
+    "NORMAL_STOP_POOL_CPR": 0,
+    "EXPENSIVE_POOL_CPR": 0,
+    "VERY_EXPENSIVE_POOL_CPR": 0,
+    "hotwater_very_expensive": "0",
+    "hotwater_expensive": "1",
+    "hotwater_normal": "1",
+    "hotwater_cheap": "1",
+    "hotwater_very_cheap": "1",
+    "enable_heat_s1": true,
+    "enable_heat_s2": false,
+    "hotwater_enable": false,
+    "heat_very_expensive_s1": -4,
+    "heat_expensive_s1": -3,
+    "heat_normal_s1": 0,
+    "heat_cheap_s1": 2,
+    "heat_very_cheap_s1": 3,
+    "ratio": 3,
+    "tibber_home": 0,
+    "enable_freq": false,
+    "block_add": false,
+    "enable_dM_reset": false,
+    "min_freq": 21,
+    "max_freq": 35,
+    "min_temp": -20,
+    "max_temp": 0,
+    "enable_own_setting": false,
+    "veryexpensive": 40,
+    "sensor_s1": "Indoor temperature",
+    "enable_temp_s1": true,
+    "mqtt_ha_thresholds": {
+      "very_cheap": 3.5,
+      "cheap": 5,
+      "normal": 7,
+      "expensive": 9
+    },
+    "solar_thresholds": {
+      "very_cheap": 1500,
+      "cheap": 500,
+      "summer_temp": 16
+    },
+    "solar_high_s1": 1500,
+    "solar_low_s1": 500,
+    "solar_enable_s1": true,
+    "prio_cost": "",
+    "prio_enable": false
+  },
+  "weather": {
+    "enable_s1": true,
+    "enable_down": true,
+    "clear": 2,
+    "sun_enable": true,
+    "mostly_clear": 1,
+    "half_clear": 0,
+    "enable_up": true,
+    "forecast_adjust": true,
+    "sensor_s1": "Indoor temperature"
+  },
+  "data": {
+    "graph": []
+  },
+  "info": {},
+  "rmu": {
+    "sensor_s1": "Indoor temperature"
+  }
+}

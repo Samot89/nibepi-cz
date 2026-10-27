@@ -1,0 +1,86 @@
+# Home Assistant side of price.source "mqtt_ha".
+# Works as a package: save as config/packages/nibepi.yaml and enable
+#   homeassistant:
+#     packages: !include_dir_named packages
+# or copy the sensor and the automations into your own files.
+# NibePi reads these MQTT topics (retained):
+#   nibepi/price/czk                    current electricity price, CZK/kWh
+#   nibepi/solar/surplus                PV surplus (export to grid), W, averaged
+#   nibepi/price/thresholds/{very_cheap,cheap,normal,expensive}   optional, overrides
+#                                       config.price.mqtt_ha_thresholds
+#
+# Replace the entity ids with your own:
+#   sensor.current_buy_electricity_price_15min  price you pay per kWh (spot + fees),
+#                                               e.g. from the "CZ Energy Spot Prices" integration
+#   sensor.grid_export_power                    instantaneous export to grid in W
+
+# --- configuration.yaml: smooth the PV surplus so clouds do not toggle the level
+sensor:
+  - platform: statistics
+    name: "PV surplus average"
+    unique_id: pv_surplus_average
+    entity_id: sensor.grid_export_power
+    state_characteristic: mean
+    max_age:
+      minutes: 10
+
+# --- automations.yaml
+automation:
+  - id: nibepi_spot_price_mqtt
+    alias: "NibePi - electricity price -> MQTT"
+    triggers:
+      - trigger: state
+        entity_id: sensor.current_buy_electricity_price_15min
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: template
+        value_template: "{{ states('sensor.current_buy_electricity_price_15min') not in ['unknown', 'unavailable', 'None'] }}"
+    actions:
+      - action: mqtt.publish
+        data:
+          topic: nibepi/price/czk
+          payload: "{{ states('sensor.current_buy_electricity_price_15min') }}"
+          retain: true
+    mode: single
+
+  - id: nibepi_pv_surplus_mqtt
+    alias: "NibePi - PV surplus -> MQTT"
+    triggers:
+      - trigger: state
+        entity_id: sensor.pv_surplus_average
+      - trigger: homeassistant
+        event: start
+    actions:
+      - action: mqtt.publish
+        data:
+          topic: nibepi/solar/surplus
+          payload: "{{ [states('sensor.pv_surplus_average') | float(0), 0] | max | round(0) | int }}"
+          retain: true
+    mode: single
+
+  # Optional: hot water boost (register 48132 = 4, temporary lux) at a negative price,
+  # only in the 1st or 2nd cheapest hour of the day and only when no boost is running.
+  - id: nibepi_hw_boost_negative_price
+    alias: "NibePi - hot water boost at negative price"
+    triggers:
+      - trigger: state
+        entity_id: sensor.current_buy_electricity_price_15min
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: template
+        value_template: "{{ states('sensor.current_buy_electricity_price_15min') | float(99) < 0 }}"
+      - condition: numeric_state
+        entity_id: sensor.current_spot_electricity_hour_order
+        below: 3
+      - condition: state
+        entity_id: sensor.nibe_temporary_lux
+        state: "0"
+    actions:
+      - action: mqtt.publish
+        data:
+          topic: nibe/modbus/48132/set
+          payload: "4"
+          retain: false
+    mode: single
