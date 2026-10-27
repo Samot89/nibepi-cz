@@ -1,0 +1,8 @@
+{
+    "starting":"Spouštím",
+    "sys_not_connected":"nepřipojeno.",
+    "sys_connected":"připojeno",
+    "extra_sensor":"Další čidlo",
+    "not_updated":"se zatím neaktualizovalo. Ignoruji",
+    "no_values":"zatím nemá hodnoty"
+}
