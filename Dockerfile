@@ -16,6 +16,12 @@ USER root
 RUN chown -R node-red /usr/src/nibepi /usr/src/node-red-contrib-nibepi
 USER node-red
 
+# The core is installed as a symlink below, which does not pull in its own
+# dependencies. serialport and modbus-serial are needed for an RS485 HAT
+# (connection.enable "serial"); NibeGW over UDP works without them.
+RUN cd /usr/src/nibepi && \
+    npm install --omit=dev
+
 RUN cd /usr/src/node-red-contrib-nibepi && \
     npm install ../nibepi --omit=dev && \
     cd /usr/src/node-red && \
