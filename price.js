@@ -44,6 +44,10 @@ module.exports = function(RED) {
                 }
             }
             if(conf.price.enable!==true) arr = [];
+            if(conf.price.source === 'mqtt_ha') {
+                server.nibe.subscribeMQTT('nibepi/price/czk');
+                server.nibe.subscribeMQTT('nibepi/solar/surplus');
+            }
                 server.initiatePlugin(arr,'price',config.system).then(data => {
                     this.status({ fill: 'green', shape: 'dot', text: `System ${system}` });
                     this.send({enabled:true});

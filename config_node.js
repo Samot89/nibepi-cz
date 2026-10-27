@@ -2656,7 +2656,8 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
                 let hours = Number(config.home['hours_'+val.system]);
                 if(!Number.isFinite(hours) || hours < 0) hours = 0;
                 const tsCount = Math.max(49, hours + 1);
-                const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=${tsCount}&parameters=air_temperature,wind_speed,wind_from_direction,wind_speed_of_gust,symbol_code`;
+                // SMHI pokryva jen Skandinavii -> Open-Meteo (odpoved se nize prevadi do SMHI formatu)
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weathercode,windspeed_10m,windgusts_10m,winddirection_10m&forecast_days=3&timeformat=unixtime&wind_speed_unit=ms`;
                 https.get(weatherUrl, (resp) => {
                     let data = '';
                     resp.on('data', (chunk) => {
@@ -2679,6 +2680,33 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
                             }
                             try {
                                 data = JSON.parse(data);
+                                if(data && data.hourly && Array.isArray(data.hourly.time)) {
+                                    // Open-Meteo -> SMHI timeSeries (t, Wsymb2, ws, wd, gust)
+                                    const omTimes = data.hourly.time;
+                                    const nowSec = Math.floor(Date.now() / 1000);
+                                    let currentIdx = omTimes.findIndex(t => t >= nowSec - 1800);
+                                    if(currentIdx < 0) currentIdx = 0;
+                                    const fakeTimeSeries = [];
+                                    for(let i = currentIdx; i < currentIdx + tsCount && i < omTimes.length; i++) {
+                                        const wmoCode = data.hourly.weathercode[i];
+                                        let wsymb2;
+                                        if(wmoCode === 0) wsymb2 = 1;
+                                        else if(wmoCode === 1) wsymb2 = 2;
+                                        else if(wmoCode === 2) wsymb2 = 3;
+                                        else wsymb2 = 4;
+                                        fakeTimeSeries.push({
+                                            validTime: new Date(omTimes[i] * 1000).toISOString(),
+                                            parameters: [
+                                                { name: "t", values: [data.hourly.temperature_2m[i]] },
+                                                { name: "Wsymb2", values: [wsymb2] },
+                                                { name: "ws", values: [data.hourly.windspeed_10m[i]] },
+                                                { name: "wd", values: [data.hourly.winddirection_10m[i]] },
+                                                { name: "gust", values: [data.hourly.windgusts_10m[i]] }
+                                            ]
+                                        });
+                                    }
+                                    data = { timeSeries: fakeTimeSeries };
+                                }
                             } catch(err) {
                                 nibe.log(`Kunde inte tolka svar från SMHI: ${err.message}`,'weather','error');
                                 if(weatherOffset[val.system]!==0) {
@@ -4164,6 +4192,108 @@ try {
             } catch (err) {
                 nibe.log(`Fel vid hämtning/analys från elprisetjustnu.se: ${err}`, 'price', 'error');
                 console.log(err);
+            }
+        } else if(config.price.source=="mqtt_ha") {
+            nibe.log(`Källan är HA MQTT spot`,'price','debug');
+            const mqttPriceTopic = 'nibepi/price/czk';
+            try {
+                const mqttPrice = await nibe.getMQTTData(mqttPriceTopic);
+                const priceVal = mqttPrice.data;
+                const thresholds = config.price.mqtt_ha_thresholds || {};
+                nibe.subscribeMQTT('nibepi/price/thresholds/very_cheap');
+                nibe.subscribeMQTT('nibepi/price/thresholds/cheap');
+                nibe.subscribeMQTT('nibepi/price/thresholds/normal');
+                nibe.subscribeMQTT('nibepi/price/thresholds/expensive');
+                const dynVC = await nibe.getMQTTData('nibepi/price/thresholds/very_cheap').catch(() => null);
+                const dynC  = await nibe.getMQTTData('nibepi/price/thresholds/cheap').catch(() => null);
+                const dynN  = await nibe.getMQTTData('nibepi/price/thresholds/normal').catch(() => null);
+                const dynE  = await nibe.getMQTTData('nibepi/price/thresholds/expensive').catch(() => null);
+                const t1 = (dynVC && !isNaN(dynVC.data)) ? dynVC.data : (thresholds.very_cheap !== undefined ? Number(thresholds.very_cheap) : 1.0);
+                const t2 = (dynC  && !isNaN(dynC.data))  ? dynC.data  : (thresholds.cheap      !== undefined ? Number(thresholds.cheap)      : 2.0);
+                const t3 = (dynN  && !isNaN(dynN.data))  ? dynN.data  : (thresholds.normal     !== undefined ? Number(thresholds.normal)     : 3.0);
+                const t4 = (dynE  && !isNaN(dynE.data))  ? dynE.data  : (thresholds.expensive  !== undefined ? Number(thresholds.expensive)  : 3.5);
+                nibe.log(`Prahy: VC<${t1} C<${t2} N<${t3} E<${t4} ${dynVC?'[MQTT]':'[static]'}`,'price','debug');
+                let level;
+                if(priceVal < t1)      level = 'VERY_CHEAP';
+                else if(priceVal < t2) level = 'CHEAP';
+                else if(priceVal < t3) level = 'NORMAL';
+                else if(priceVal < t4) level = 'EXPENSIVE';
+                else                   level = 'VERY_EXPENSIVE';
+                nibe.log(`HA spot cena: ${priceVal.toFixed(2)} Kc/kWh, uroven pred FVE: ${level}`,'price','debug');
+                // FVE pretok boost — povysi uroven kdyz jsou dostupne pretekajici Waty
+                const solarCfg = config.price.solar_thresholds || {};
+                const sHigh = solarCfg.very_cheap !== undefined ? Number(solarCfg.very_cheap) : 1500;
+                const sLow  = solarCfg.cheap      !== undefined ? Number(solarCfg.cheap)      : 500;
+                // Letni rezim: nad touto venkovni teplotou FVE boostuje jen TUV, ne topeni
+                const summerThreshold = solarCfg.summer_temp !== undefined ? Number(solarCfg.summer_temp) : 16;
+                const outdoorTemp = (data['outside'] !== undefined && data['outside'].data !== undefined) ? data['outside'].data : null;
+                const baseLevel = level;
+                let fveActive = false;
+                let fveLevel = level;
+                try {
+                    const solarData = await nibe.getMQTTData('nibepi/solar/surplus');
+                    const surplusW = solarData.data;
+                    if(surplusW >= sHigh) {
+                        fveLevel = 'VERY_CHEAP';
+                        fveActive = true;
+                        nibe.log(`FVE: ${surplusW} W >= ${sHigh} W -> VERY_CHEAP`,'price','debug');
+                    } else if(surplusW >= sLow) {
+                        const steps = ['VERY_EXPENSIVE','EXPENSIVE','NORMAL','CHEAP','VERY_CHEAP'];
+                        const idx = steps.indexOf(level);
+                        fveLevel = (idx !== -1 && idx < steps.length - 1) ? steps[idx + 1] : level;
+                        fveActive = true;
+                        nibe.log(`FVE: ${surplusW} W >= ${sLow} W -> ${fveLevel}`,'price','debug');
+                    } else {
+                        nibe.log(`FVE: ${surplusW} W < ${sLow} W -> bez vlivu`,'price','debug');
+                    }
+                } catch(solarErr) {
+                    nibe.log(`FVE pretok nedostupny, pouzivam jen spot cenu`,'price','debug');
+                }
+                const isSummer = fveActive && outdoorTemp !== null && outdoorTemp >= summerThreshold;
+                if(isSummer) {
+                    // Letni rezim: FVE boost jen pro TUV, topeni zustava na zakladni spot cene
+                    delete data.price_level;
+                    data.heat_price_level = {data: baseLevel, raw_data: baseLevel};
+                    data.hw_price_level   = {data: fveLevel,  raw_data: fveLevel};
+                    nibe.log(`FVE letni rezim (${outdoorTemp}C >= ${summerThreshold}C): topeni=${baseLevel}, TUV=${fveLevel}`,'price','debug');
+                } else {
+                    data.price_level = {data: fveLevel, raw_data: fveLevel};
+                }
+                nibe.log(`Vysledna uroven (spot+FVE): heat=${isSummer ? baseLevel : fveLevel}, TUV=${fveLevel}`,'price','debug');
+                data.price_current = {
+                    data: parseFloat(priceVal.toFixed(2)),
+                    raw_data: priceVal,
+                    timestamp: mqttPrice.timestamp,
+                    info: "Spot cena elektriny (HA)",
+                    titel: "Spot cena",
+                    register: "electric_price",
+                    unit: "Kc/kWh",
+                    icon_name: "fa-flash"
+                };
+                savedData['electric_price'] = data.price_current;
+                saveDataGraph('electric_price', Date.now(), priceVal);
+                priceAdjustCurve(data).catch(err => reportPluginError('Elprisreglering',err));
+                adjustPool(data, data.system).catch(console.log);
+                nibeData.emit('pluginPrice', data);
+                // nibeBuildGraph cte data.price_level, ktery v letnim rezimu chybi -> graf podle urovne topeni
+                const graphData = isSummer ? Object.assign({}, data, {price_level: data.heat_price_level}) : data;
+                nibeData.emit('pluginPriceGraph', nibeBuildGraph(graphData, data.system));
+            } catch(err) {
+                nibe.log(`HA MQTT spot cena nenalezena: ${err}`,'price','debug');
+                sendError('Elprisreglering', `HA MQTT spot cena neni k dispozici.`);
+                // Reset cenoveho offsetu na neutral — jinak zustavaji stare hodnoty
+                if(priceOffset[data.system] !== 0) {
+                    priceOffset[data.system] = 0;
+                    curveAdjust('price', data.system, 0);
+                    nibe.log(`Resetuji cenovy offset na 0 (cena nedostupna)`,'price','debug');
+                }
+                let conf = nibe.getConfig();
+                if(conf.price && conf.price.hotwater_enable === true) {
+                    const normalMode = Number(conf.price.hotwater_normal || 1);
+                    nibe.reqData(hP.hw_mode).then(result => {
+                        if(result.raw_data !== normalMode) nibe.setData(hP.hw_mode, normalMode);
+                    }).catch(console.log);
+                }
             }
         }
     }
