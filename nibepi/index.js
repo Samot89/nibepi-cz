@@ -1437,6 +1437,13 @@ const handleMQTT = (on,host,port,user,pass,cb) => {
                 for (const arr of mqtt_subcribers) {
                     if(topic===arr) {
                         let save = topic.replace(/\//g,"_");
+                        // An empty payload clears a retained topic: forget the value instead
+                        // of storing Number("") = 0 (a 0 threshold or price would be used).
+                        if(message.length===0) {
+                            delete mqttData[save];
+                            subscribed = true;
+                            continue;
+                        }
                         let messageString = message.toString().replace(/\,/g,".");
                         if(mqttData[save]===undefined) mqttData[save] = {};
                         mqttData[save].data = Number(messageString);
@@ -1473,6 +1480,8 @@ const handleMQTT = (on,host,port,user,pass,cb) => {
                             publishMQTT(config.mqtt.topic+"adjust_s2",config.home.adjust_s2)
                         }
                     } else if(topic.includes('set')) {
+                        // Empty payload = a retained command being cleared, not a value to write
+                        if(message.length===0) return;
                         setData(topic[0],message,(err,result) => {
                             if(err) return console.log(err);
                         });
