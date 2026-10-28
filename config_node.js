@@ -1222,7 +1222,9 @@ async function vvAiTick() {
 
             // Om varken VV-AI, tidsstyrning eller VV-AI-styrning är aktiverad
             // och vi inte har en pågående tidsstyrning att städa upp efter, gör vi ingenting.
-            if (!learningEnabled && !manualScheduleEnabled && !aiControlEnabled && !vvLastManualSchedule) {
+            // vvLastAiControl: one more tick after VV-AI control is switched off, so the
+            // HW period it held at 0 is restored below.
+            if (!learningEnabled && !manualScheduleEnabled && !aiControlEnabled && !vvLastManualSchedule && !vvLastAiControl) {
                 return;
             }
 
@@ -1742,8 +1744,10 @@ async function vvAiTick() {
                     let desiredPeriod = 0;
 
                     if (!scheduleActive) {
-                        // ON -> OFF: återställ baseline så Nibe inte lämnas blockerad av tidsstyrningen
-                        if (vvLastManualSchedule) {
+                        // ON -> OFF: återställ baseline så Nibe inte lämnas blockerad av tidsstyrningen.
+                        // Same when VV-AI control goes off: with hw_period left at 0 and nothing
+                        // triggering startHW, the pump would not make hot water at all.
+                        if (vvLastManualSchedule || (vvLastAiControl && !aiOk)) {
                             desiredPeriod = base;
                         } else {
                             desiredPeriod = 0;
