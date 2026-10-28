@@ -1441,6 +1441,8 @@ const handleMQTT = (on,host,port,user,pass,cb) => {
                         if(mqttData[save]===undefined) mqttData[save] = {};
                         mqttData[save].data = Number(messageString);
                         mqttData[save].raw_data = Number(messageString);
+                        // Unparsed payload for non-numeric topics (e.g. a JSON price list)
+                        mqttData[save].text = message.toString();
                         mqttData[save].register = save;
                         mqttData[save].timestamp = Date.now();
                         nibeEmit.emit('mqttData',mqttData[save]);
