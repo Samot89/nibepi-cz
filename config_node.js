@@ -1906,6 +1906,26 @@ async function vvAiTick() {
                         }
                     }
 
+                    // 4) FVE pretoky (price.source mqtt_ha): pri pretoku >= solar_thresholds.very_cheap
+                    //    ohrev na Lux stop teplotu, pri >= cheap aspon na Normal. Jen s cerstvou hodnotou.
+                    if (!wantHeat && aiOk && Number.isFinite(bt7Now) && config.price && config.price.source === 'mqtt_ha') {
+                        const solarCfg = config.price.solar_thresholds || {};
+                        const sHigh = solarCfg.very_cheap !== undefined ? Number(solarCfg.very_cheap) : 1500;
+                        const sLow  = solarCfg.cheap      !== undefined ? Number(solarCfg.cheap)      : 500;
+                        const solar = await nibe.getMQTTData('nibepi/solar/surplus').catch(() => null);
+                        const fresh = solar && Number.isFinite(solar.data) && (ts - solar.timestamp) < 30 * 60000;
+                        if (fresh) {
+                            let t = NaN;
+                            if (solar.data >= sHigh) t = luxStop;
+                            else if (solar.data >= sLow) t = normalStop;
+                            if (Number.isFinite(t) && bt7Now < t) {
+                                targetTemp = t;
+                                wantHeat = true;
+                                nibe.log(`VV-AI: FVE pretok ${solar.data} W -> ohrev TUV na ${t} C`, 'hotwater', 'debug');
+                            }
+                        }
+                    }
+
                     // Rate-limit skrivningar till startHW (minst ~1s mellan)
                     const nowTs = Date.now();
                     const lastWrite = (store && store.meta && Number.isFinite(store.meta.lastStartHWWriteTs))
@@ -4196,6 +4216,17 @@ try {
         } else if(config.price.source=="mqtt_ha") {
             nibe.log(`Källan är HA MQTT spot`,'price','debug');
             const mqttPriceTopic = 'nibepi/price/czk';
+            // Hodinovy cenik dnes+zitra pro planovani VV-AI: [{startsAt, total}] v Kc/kWh
+            nibe.subscribeMQTT('nibepi/price/czk_hourly');
+            const mqttPriceList = await nibe.getMQTTData('nibepi/price/czk_hourly').catch(() => null);
+            if(mqttPriceList && typeof mqttPriceList.text === 'string') {
+                try {
+                    const list = JSON.parse(mqttPriceList.text);
+                    if(Array.isArray(list) && list.length > 0) vvAiPriceCache = list;
+                } catch(e) {
+                    nibe.log(`HA cenik (nibepi/price/czk_hourly) neni platny JSON: ${e.message}`,'price','debug');
+                }
+            }
             try {
                 const mqttPrice = await nibe.getMQTTData(mqttPriceTopic);
                 const priceVal = mqttPrice.data;
