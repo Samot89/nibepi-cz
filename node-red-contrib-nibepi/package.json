@@ -1,0 +1,42 @@
+{
+  "dependencies": {
+    "nibepi": "github:fnordpojk/nibepi-backend#master",
+    "node-cron": "^4.6.0",
+    "node-red-dashboard": "~3.6.6",
+    "node-red-node-ui-list": "~0.3.6",
+    "suncalc": "^2.0.2"
+  },
+  "deprecated": false,
+  "description": "Node-RED NibePi, communicate with your Nibe F series heatpump with RS485 adapter.",
+  "keywords": [
+    "node-red",
+    "nibe",
+    "nibepi"
+  ],
+  "license": "MIT",
+  "name": "node-red-contrib-nibepi",
+  "node-red": {
+    "nodes": {
+      "nibe-config": "config_node.js",
+      "nibe-config-req": "config_req.js",
+      "nibe-output": "output.js",
+      "nibe-input": "input.js",
+      "nibe-request": "request.js",
+      "nibe-weather": "weather.js",
+      "nibe-indoor": "indoor.js",
+      "nibe-price": "price.js",
+      "nibe-hotwater": "hotwater.js",
+      "nibe-rmu": "rmu.js",
+      "nibe-fan": "fan.js",
+      "nibe-graph": "graph.js",
+      "nibe-hotwater-ai": "hotwater_ai.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "2.0.0",
+  "engines": {
+    "node": ">=20"
+  }
+}

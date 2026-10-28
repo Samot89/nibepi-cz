@@ -1,0 +1,134 @@
+
+module.exports = function(RED) {
+    function nibeIndoor(config) {
+        RED.nodes.createNode(this,config);
+        let node = this;
+        const server = RED.nodes.getNode(config.server);
+        // Track this node's own subscriptions so close() can release exactly
+        // those. They were previously either never removed (leaking on every
+        // redeploy) or cleared with removeAllListeners(), which also wiped every
+        // other node's subscriptions from the shared emitter.
+        const __subs = [];
+        const sub = (ev, fn) => { __subs.push([ev, fn]); server.nibeData.on(ev, fn); return fn; };
+        this.on('close', function() {
+            for (const s of __subs) server.nibeData.removeListener(s[0], s[1]);
+            __subs.length = 0;
+            clearTimeout(retryTimer);
+        });
+        let retryTimer;
+        let startUpRun = 0;
+        async function startUp() {
+            clearTimeout(retryTimer);
+            const run = ++startUpRun;
+            let system = config.system.replace('s','S');
+            let conf = server.nibe.getConfig();
+            node.status({ fill: 'yellow', shape: 'dot', text: `System ${system}` });
+            let arr = [
+                //{topic:"inside_"+config.system,source:"nibe"},
+                {topic:"inside_set_"+config.system,source:"nibe"},
+                {topic:"inside_enable_"+config.system,source:"nibe"},
+                {topic:"inside_factor_"+config.system,source:"nibe"},
+                {topic:"exhaust",source:"nibe"},
+                {topic:"outside",source:"nibe"}
+            ];
+            if(conf.system.pump!=="F370" && conf.system.pump!=="F470") {
+                arr.push({topic:"dM",source:"nibe"});
+                arr.push({topic:"dMstart",source:"nibe"})
+            }
+            if(conf.indoor===undefined) {
+                conf.indoor = {};
+                server.nibe.setConfig(conf);
+            }
+            if(conf.home.inside_sensors===undefined) {
+                conf.home.inside_sensors = [];
+                server.nibe.setConfig(conf);
+            }
+            if(conf.indoor['sensor_'+config.system]===undefined || conf.indoor['sensor_'+config.system]=="Ingen") {
+                arr.push({topic:"inside_"+config.system,source:"nibe"});
+            } else {
+                let index = conf.home.inside_sensors.findIndex(i => i.name == conf.indoor['sensor_'+config.system]);
+                if(index!==-1) {
+                    var insideSensor = Object.assign({}, conf.home.inside_sensors[index]);
+                    
+                    
+                    arr.push(insideSensor);
+                }
+            }
+            // Registered when NibePi's indoor control is on, or the pump's own room
+            // sensor setting is. A failed read of the latter used to count as off,
+            // and left indoor control unregistered even when it was switched on here.
+            if(conf.indoor['enable_'+config.system]!==true) {
+                let readError;
+                let nibe_enabled = await server.nibe.reqData(server.hP()["inside_enable_"+config.system]).catch(err => { readError = err; });
+                if(run!==startUpRun) return;
+                if(readError!==undefined && !String(readError.message || readError).includes('not in database')) {
+                    console.log(readError);
+                    retryTimer = setTimeout(startUp, 60000);
+                    return;
+                }
+                if(nibe_enabled===undefined || nibe_enabled.data!==1) arr = [];
+            }
+                server.initiatePlugin(arr,'indoor',config.system).then(data => {
+                    node.status({ fill: 'green', shape: 'dot', text: `System ${system}` });
+                    node.send({enabled:true});
+                },(reject => {
+                    node.status({ fill: 'red', shape: 'dot', text: `System ${system}` });
+                    node.send({enabled:false});
+                }));
+        }
+        node.on('input', function(msg) {
+            let conf = server.nibe.getConfig();
+            if(msg.topic=="update") {
+                server.updateData();
+                return;
+            }
+            if(msg.payload!==undefined && msg.topic!==undefined && msg.topic!=="") {
+                let req = msg.topic.split('/');
+                if(conf[req[0]]===undefined) conf[req[0]] = {};
+                if(conf[req[0]][req[1]+'_'+config.system]!==msg.payload) {
+                    conf[req[0]][req[1]+'_'+config.system] = msg.payload;
+                    server.nibe.setConfig(conf);
+                }
+                startUp();
+            }
+            
+        });
+        if(server.nibe.core!==undefined && server.nibe.core.connected!==undefined && server.nibe.core.connected===true) {
+            startUp();
+        } else {
+            sub('ready', (data) => {
+                startUp();
+            })
+        }
+        sub(node.id, (data) => {
+            if(data.changed===true) {
+                config.system = data.system;
+                if(server.nibe.core!==undefined && server.nibe.core.connected!==undefined && server.nibe.core.connected===true) {
+                    startUp();
+                }
+            }
+        })
+        sub('pluginIndoor', (data) => {
+            if(data.system===config.system) {
+                let outside = data['outside'];
+                let inside = data.indoorSensor;
+                
+                if(inside===undefined) inside = data['inside_'+data.system];
+                if(inside!==undefined && inside.data>-3276) {
+                    node.send({topic:"Inomhustemperatur",payload:inside.data});
+                }
+                if(data.indoorOffset!==undefined) {
+                    node.send({topic:"Kurvjustering",payload:data.indoorOffset});
+                }
+                if(outside!==undefined) node.send({topic:"Tid",payload:outside.timestamp});
+                node.send({topic:"Avvikelse",payload:data.accuracy});
+            }
+        })
+
+        node.on('close', function() {
+            let system = config.system.replace('s','S');
+            node.status({ fill: 'yellow', shape: 'dot', text: `System ${system}` });
+        });
+    }
+    RED.nodes.registerType("nibe-indoor",nibeIndoor);
+}
