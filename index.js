@@ -1426,7 +1426,9 @@ const handleMQTT = (on,host,port,user,pass,cb) => {
                     if(message.toString()==='online') scheduleDiscovery();
                     return;
                 }
-                if(topic.startsWith('homeassistant/sensor/')) {
+                // Only discovery configs; other homeassistant/sensor/... topics can be
+                // subscribed inside sensors (e.g. HA mqtt_statestream .../state).
+                if(topic.startsWith('homeassistant/sensor/') && topic.endsWith('/config')) {
                     clearOldDiscovery(topic,message);
                     return;
                 }
