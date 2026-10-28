@@ -31,7 +31,7 @@ module.exports = function(RED) {
             for( var i = 0; i < arr.length; i++){
                 let name;
                     if(arr[i].name!==undefined && arr[i].name!=="") {
-                        name = arr[i].name;
+                        name = server.trGraph ? server.trGraph(arr[i].name) : arr[i].name;
                     } else {
                         if(savedData[arr[i].register]!==undefined) {
                         name = savedData[arr[i].register].titel;

@@ -65,6 +65,14 @@ module.exports = function(RED) {
     var tcp_port = "";
     let text = require('./language-SE.json')
     let translate = require('./translate.json')
+    // Graph series names are Swedish in the code; translate them for the selected language
+    const graphText = require('./translate-graph.json')
+    const trGraph = (name) => {
+        const config = nibe.getConfig() || {};
+        const lang = config.system && config.system.language;
+        const t = graphText[name];
+        return (t && lang && t[lang]) ? t[lang] : name;
+    }
     var series = "";
     var systems = {};
     let adjust = [];
@@ -1172,9 +1180,9 @@ for (let i = 0; i < 168; i++) {
             }
 
             const sendArray = [{
-                series,
+                series: series.map(trGraph),
                 data,
-                labels
+                labels: labels.map(trGraph)
             }];
 
             // System 1 för nu – kan utökas senare om vi kör fler system.
@@ -2625,9 +2633,9 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
                 direction_arr.sort((a, b) => (a.x > b.x) ? 1 : -1)
                 output.graph = [
                     {
-                        "series":["Vindhastighet","Byvind","Utomhustemp","Köldeffekt","Riktning"],
+                        "series":["Vindhastighet","Byvind","Utomhustemp","Köldeffekt","Riktning"].map(trGraph),
                         "data":[wind_speed_arr,wind_gust_arr,temp_arr,feel_arr,direction_arr],
-                        "labels":["Vindhastighet","Byvind","Utomhustemp","Köldeffekt","Riktning"]
+                        "labels":["Vindhastighet","Byvind","Utomhustemp","Köldeffekt","Riktning"].map(trGraph)
                     }];
           } else {
               output.feel = undefined;
@@ -3336,9 +3344,9 @@ if (typeof level === "string" && /^-?\d+(\.\d+)?$/.test(level)) level = Number(l
             nibeGraphAdjust.sort((a, b) => (a.x > b.x) ? 1 : -1)
             var sendArray = [
                 {
-                    "series":["Pris","Kurvjustering"],
+                    "series":["Pris","Kurvjustering"].map(trGraph),
                     "data":[nibeGraph,nibeGraphAdjust],
-                    "labels":["Pris","Kurvjustering"]
+                    "labels":["Pris","Kurvjustering"].map(trGraph)
                 }];
             let result = {values:sendArray,system:system};
             return result;
@@ -3376,9 +3384,9 @@ if (typeof level === "string" && /^-?\d+(\.\d+)?$/.test(level)) level = Number(l
 
         var sendArray = [
             {
-                "series":["Pris","Kurvjustering"],
+                "series":["Pris","Kurvjustering"].map(trGraph),
                 "data":[valueArray,adjustArray],
-                "labels":["Pris","Kurvjustering"]
+                "labels":["Pris","Kurvjustering"].map(trGraph)
             }];
         let result = {values:sendArray,system:system};
         return result;
@@ -3455,9 +3463,9 @@ let value = Number((__own ? (baseKr * (__applyVat ? (1 + vatRate) : 1) + (additi
 
         var sendArray = [
             {
-                "series":["Pris","Värmejustering","Varmvattenläge"],
+                "series":["Pris","Värmejustering","Varmvattenläge"].map(trGraph),
                 "data":[valueArray,adjustArrayHeat,adjustArrayHW],
-                "labels":["Pris","Värmejustering","Varmvattenläge"]
+                "labels":["Pris","Värmejustering","Varmvattenläge"].map(trGraph)
             }];
             if(prio_add_enable!==undefined) {
                 if(config.price.prio_enable===true) {
@@ -3480,9 +3488,9 @@ let value = Number((__own ? (baseKr * (__applyVat ? (1 + vatRate) : 1) + (additi
                         }
                     }
                     prioArray.sort((a, b) => (a.x > b.x) ? 1 : -1)
-                    sendArray[0].series.push('Prio. tillsats')
+                    sendArray[0].series.push(trGraph('Prio. tillsats'))
                     sendArray[0].data.push(prioArray)
-                    sendArray[0].labels.push('Prio. tillsats')
+                    sendArray[0].labels.push(trGraph('Prio. tillsats'))
                 }
             }
         let result = {values:sendArray,system:system};
@@ -5936,6 +5944,7 @@ const checkTranslation = (node) => {
         this.hP = gethP;
         this.checkReady = checkReady;
         this.translate = translate;
+        this.trGraph = trGraph;
         this.on('close', function() {
             console.log('Closing listeners');
             nibeData.removeAllListeners();
