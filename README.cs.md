@@ -2,6 +2,7 @@
 
 Řízení tepelných čerpadel Nibe řady F (např. VVM320, F1255) z Raspberry Pi
 přes RS485 HAT, s cenami elektřiny a FVE přetoky z Home Assistantu.
+Vše v jednom repozitáři: jádro, Node-RED nody, flows i Docker image.
 
 🇬🇧 English: [README.md](README.md)
 
@@ -11,10 +12,17 @@ přes RS485 HAT, s cenami elektřiny a FVE přetoky z Home Assistantu.
 |---|---|
 | [anerdins](https://github.com/anerdins) | původní NibePi (do verze 1.2.1) |
 | [fnordpojk](https://github.com/fnordpojk) | NibePi 2.0: Docker, Node-RED 5 / Node 24, práce od ahsberg a pizzihelmet (VV-AI, bazén) |
-| tento fork | úpravy pro ČR (níže) |
+| tento repozitář | úpravy pro ČR (níže) |
 
-Celá historie obou je v repozitářích zachovaná. Původní autoři se na tomto
+Celá historie všech původních repozitářů je zachovaná. Původní autoři se na tomto
 forku nepodílejí, chyby proto prosím nehlaste u nich.
+
+| složka | obsah |
+|---|---|
+| `nibepi/` | jádro: komunikace s čerpadlem, registry, MQTT |
+| `node-red-contrib-nibepi/` | Node-RED nody: ceny, počasí, TUV, VV-AI |
+| `flows/` | Node-RED flows a dashboard (připojí se do kontejneru jako `/data`) |
+| `scripts/`, `examples/` | instalace na Pi, spuštění, vzorový config, Home Assistant |
 
 ## Co tento fork přidává
 
@@ -24,21 +32,19 @@ forku nepodílejí, chyby proto prosím nehlaste u nich.
 - **Cena z Home Assistantu (`price.source: "mqtt_ha"`).** Vestavěné zdroje cen
   (Tibber, elprisetjustnu.se) jsou jen pro severské země. Tenhle bere aktuální
   cenu v Kč/kWh z MQTT, kam ji posílá Home Assistant, a podle vašich prahů z ní
-  určí jednu z pěti cenových hladin.
+  určí jednu z pěti cenových hladin. Dá se zvolit i v dashboardu.
 - **FVE boost.** Přetoky z FVE posílané přes MQTT zvednou cenovou hladinu
   (≥ 1500 W → VERY_CHEAP, ≥ 500 W → o stupeň výš). Nad 16 °C venku se boostuje
   jen ohřev TUV, ne topení.
+- **VV-AI (učení TUV) s cenami z Home Assistantu.** Hodinový ceník na dnešek a
+  zítřek z HA umožní VV-AI plánovat ohřev TUV do nejlevnějších hodin. FVE přetoky
+  ohřejí TUV na vypínací teplotu Normal/Lux.
 - **Předpověď z Open-Meteo.** SMHI pokrývá jen Skandinávii, prognózní regulace
   proto bere předpověď z Open-Meteo.
-
-## Repozitáře
-
-| repozitář | obsah |
-|---|---|
-| [nibepi-docker](https://github.com/Samot89/nibepi-docker) | Dockerfile, skripty, příklady (tento) |
-| [nibepi-backend](https://github.com/Samot89/nibepi-backend) | jádro: komunikace s čerpadlem, registry, MQTT |
-| [node-red-contrib-nibepi](https://github.com/Samot89/node-red-contrib-nibepi) | Node-RED nody: ceny, počasí, TUV, VV-AI |
-| [nibepi-flow](https://github.com/Samot89/nibepi-flow) | Node-RED flows a dashboard |
+- **Čeština v dashboardu.**
+- Opravy: pokojová čidla z HA `mqtt_statestream` (`homeassistant/sensor/<entita>/state`)
+  jádro zahazovalo; po vypnutí řízení VV-AI zůstala perioda TUV v čerpadle na 0
+  a TUV se neohřívala.
 
 ## Co je potřeba
 
@@ -54,14 +60,14 @@ forku nepodílejí, chyby proto prosím nehlaste u nich.
 2. Na Pi:
 
    ```sh
-   git clone https://github.com/Samot89/nibepi-docker.git
-   cd nibepi-docker
+   git clone https://github.com/Samot89/nibepi-cz.git
+   cd nibepi-cz
    ./scripts/setup_pi.sh
    ```
 
-   Skript nainstaluje Docker, stáhne repozitáře do `/opt/nibepi/`, zapne UART
-   pro HAT (`enable_uart=1`, `dtoverlay=disable-bt`, vypne sériovou konzoli)
-   a sestaví image. Na Pi Zero 2 W to trvá zhruba 10–15 minut.
+   Skript nainstaluje Docker, naklonuje repozitář do `/opt/nibepi/src/nibepi-cz`,
+   zapne UART pro HAT (`enable_uart=1`, `dtoverlay=disable-bt`, vypne sériovou
+   konzoli) a sestaví image. Na Pi Zero 2 W to trvá zhruba 10–15 minut.
 
 3. Config:
 
@@ -74,15 +80,25 @@ forku nepodílejí, chyby proto prosím nehlaste u nich.
    (souřadnice pro předpověď a východ a západ slunce) a `system.pump` (model
    čerpadla).
 
-4. `sudo reboot` (kvůli UARTu), pak `./scripts/run_nibepi.sh`.
+4. `sudo reboot` (kvůli UARTu), pak `/opt/nibepi/src/nibepi-cz/scripts/run_nibepi.sh`.
 5. Dashboard je na `http://<ip-pi>:1880/ui`.
+
+NibePi se po restartu Pi spustí samo (Docker `--restart unless-stopped`).
+
+### Aktualizace
+
+```sh
+cd /opt/nibepi/src/nibepi-cz && git pull
+sudo docker build -t nibepi-nodered . && ./scripts/run_nibepi.sh
+```
 
 ### Přechod ze starého NibePi
 
 - Starý config se dá zkopírovat: `./scripts/run_nibepi.sh --copy-config pi@<stare-pi>`.
 - **Obě NibePi nesmí běžet současně se stejným MQTT topicem.** Nová verze po
-  připojení smaže v HA staré discovery entity a vytvoří jedno nové zařízení,
-  takže se mohou změnit entity ID v HA (automatizace je pak potřeba upravit).
+  připojení smaže v HA staré discovery entity a vytvoří jedno nové zařízení
+  (entity `sensor.nibe_<model>_*`). Aby automatizace fungovaly dál, přejmenujte
+  nové entity v HA na původní ID.
 - Na zkoušku vedle starého NibePi (bez čerpadla, bez zásahu do HA) slouží
   `./scripts/run_nibepi_test.sh`.
 
@@ -94,8 +110,9 @@ Posílá do MQTT:
 | topic | obsah |
 |---|---|
 | `nibepi/price/czk` | aktuální nákupní cena v Kč/kWh (např. z integrace CZ Energy Spot Prices) |
+| `nibepi/price/czk_hourly` | hodinový ceník dnes + zítra pro VV-AI (`[{startsAt, total}]`) |
 | `nibepi/solar/surplus` | průměrné FVE přetoky ve W |
-| `nibepi/price/thresholds/*` | volitelně: prahy hladin, přepíší hodnoty z configu |
+| `nibepi/price/thresholds/*` | volitelně: prahy hladin, **přepíší** hodnoty z configu |
 
 A v `config.json`:
 
@@ -121,26 +138,44 @@ Prahy hladin se nastavují jen v `config.json`. Upravujte ho při zastaveném
 kontejneru (`sudo docker stop nibepi`), jinak NibePi změny přepíše hodnotami
 z paměti.
 
+V čerpadle vypněte **Smart Price Adaption** (menu 4.1.6), aby se dvě cenové
+regulace nepraly.
+
+## VV-AI – učení a řízení TUV
+
+Záložka *TUV – učící se AI*. Doporučené nastavení:
+
+| Nastavení | Hodnota |
+|---|---|
+| Zapnout učení TUV | zapnuto |
+| Zapnout řízení TUV pomocí AI | zapnuto (autor doporučuje ~2 týdny jen učení) |
+| Zapnout minimální teplotu | zapnuto, např. 43 °C (pojistka, ohřeje na +4 °C) |
+| Použít řízení podle ceny elektřiny | zapnuto (potřebuje `nibepi/price/czk_hourly`) |
+| Minimální pokles BT6 | výchozí 3 °C |
+
+⚠️ S řízením VV-AI NibePi drží v čerpadle **periodu TUV (47134) na 0** a ohřev
+spouští samo (48132). **Když je Pi vypnuté, TUV se neohřívá.** Při vypnutí řízení
+VV-AI se perioda vrátí na uloženou hodnotu (`hotwater.vv_backup_hw_period`).
+Vypínací teplota Lux by měla být v čerpadle vyšší než Normal.
+
 ## Čeština v dashboardu
 
 Nastavení → Jazyk → **Čeština**. Popisky a nápovědy v nastavení se řídí
 zvoleným jazykem. Názvy záložek a skupin, které byly v originálu jen švédsky,
 jsou česky. Hlášení v logu z jádra NibePi zůstávají švédsky.
 
-## Aktualizace z upstreamu
+## Aktualizace z upstreamu (pro vývoj)
 
 ```sh
-cd /opt/nibepi/src/nibepi-docker/node-red-contrib-nibepi
-git remote add fnordpojk https://github.com/fnordpojk/node-red-contrib-nibepi.git
-git pull --rebase fnordpojk main
-# stejně pro nibepi/ (fnordpojk/nibepi-backend) a nibepi-docker
-cd /opt/nibepi/src/nibepi-docker && sudo docker build -t nibepi-nodered . && ./scripts/run_nibepi.sh
+git subtree pull --prefix=nibepi https://github.com/fnordpojk/nibepi-backend.git master
+git subtree pull --prefix=node-red-contrib-nibepi https://github.com/fnordpojk/node-red-contrib-nibepi.git master
+git subtree pull --prefix=flows https://github.com/fnordpojk/nibepi-flow.git master
 ```
 
 ## Užitečné příkazy
 
 ```sh
-sudo docker logs -f nibepi        # log
-sudo docker restart nibepi        # restart
+sudo docker logs -f nibepi          # log
+sudo docker restart nibepi          # restart
 tail -f /opt/nibepi/tmp/nibepi.log  # debug log NibePi (když je zapnutý)
 ```

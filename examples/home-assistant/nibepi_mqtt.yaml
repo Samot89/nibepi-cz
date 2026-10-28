@@ -5,6 +5,7 @@
 # or copy the sensor and the automations into your own files.
 # NibePi reads these MQTT topics (retained):
 #   nibepi/price/czk                    current electricity price, CZK/kWh
+#   nibepi/price/czk_hourly             hourly prices today + tomorrow for VV-AI, [{startsAt, total}]
 #   nibepi/solar/surplus                PV surplus (export to grid), W, averaged
 #   nibepi/price/thresholds/{very_cheap,cheap,normal,expensive}   optional, overrides
 #                                       config.price.mqtt_ha_thresholds
@@ -44,6 +45,38 @@ automation:
           retain: true
     mode: single
 
+  # Hourly averages of the 15-minute prices (attributes of the price sensor, today and
+  # tomorrow). VV-AI keeps one price per hour of the week, so 15-minute values would
+  # leave only the last quarter of each hour.
+  - id: nibepi_hourly_price_list_mqtt
+    alias: "NibePi - hourly price list -> MQTT"
+    triggers:
+      - trigger: state
+        entity_id: sensor.current_buy_electricity_price_15min
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: template
+        value_template: "{{ states('sensor.current_buy_electricity_price_15min') not in ['unknown', 'unavailable', 'None'] }}"
+    actions:
+      - action: mqtt.publish
+        data:
+          topic: nibepi/price/czk_hourly
+          retain: true
+          payload: >-
+            {% set a = states.sensor.current_buy_electricity_price_15min.attributes %}
+            {% set ns = namespace(out=[]) %}
+            {% for k in a.keys() if k is string and k[:2] == '20' and k[14:16] == '00' %}
+            {% set acc = namespace(s=0, n=0) %}
+            {% for m in ['00', '15', '30', '45'] %}
+            {% set v = a.get(k[:14] ~ m ~ k[16:]) %}
+            {% if v is number %}{% set acc.s = acc.s + v %}{% set acc.n = acc.n + 1 %}{% endif %}
+            {% endfor %}
+            {% if acc.n > 0 %}{% set ns.out = ns.out + [{'startsAt': k, 'total': (acc.s / acc.n) | round(4)}] %}{% endif %}
+            {% endfor %}
+            {{ ns.out | tojson }}
+    mode: single
+
   - id: nibepi_pv_surplus_mqtt
     alias: "NibePi - PV surplus -> MQTT"
     triggers:
@@ -74,8 +107,9 @@ automation:
       - condition: numeric_state
         entity_id: sensor.current_spot_electricity_hour_order
         below: 3
+      # Register 48132 (Temporary Lux); NibePi 2.0 discovery names it sensor.nibe_<model>_temporary_lux_2
       - condition: state
-        entity_id: sensor.nibe_temporary_lux
+        entity_id: sensor.nibe_vvm320_temporary_lux_2
         state: "0"
     actions:
       - action: mqtt.publish

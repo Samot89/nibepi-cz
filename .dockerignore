@@ -3,3 +3,7 @@
 **/*.log
 nibepi/test.js
 nibepi/example*.js
+# Not part of the image: flows are bind-mounted as /data at run time
+flows
+scripts
+examples

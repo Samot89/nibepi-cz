@@ -11,6 +11,7 @@
 
 set -e
 
+SRC=$(cd "$(dirname "$0")/.." && pwd)
 TEST_ETC=/opt/nibepi/etc-test/nibepi
 mkdir -p "$TEST_ETC"
 cp /opt/nibepi/etc/nibepi/config.json "$TEST_ETC/config.json"
@@ -27,7 +28,7 @@ EOF
 sudo docker rm -f nibepi nibepi-test 2>/dev/null || true
 sudo docker run -dit --name nibepi-test \
   -e TZ=Europe/Prague \
-  -v /opt/nibepi/data/nibepi-flow:/data \
+  -v "$SRC/flows":/data \
   -v "$TEST_ETC":/etc/nibepi \
   -v /opt/nibepi/tmp:/tmp \
   -p 1880:1880 \

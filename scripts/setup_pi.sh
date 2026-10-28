@@ -3,12 +3,13 @@
 # with an RS485 HAT on the GPIO UART (/dev/ttyAMA0).
 #
 # Run as a normal user with sudo rights. Reboot afterwards so the UART change applies.
-# Repos are cloned to /opt/nibepi/src (code) and /opt/nibepi/data (flows).
+# The repository is cloned to /opt/nibepi/src/nibepi-cz; config lives in /opt/nibepi/etc.
 
 set -e
 
-GH=${GH:-https://github.com/Samot89}
+REPO=${REPO:-https://github.com/Samot89/nibepi-cz.git}
 BASE=/opt/nibepi
+SRC=$BASE/src/nibepi-cz
 
 echo "--- Packages"
 sudo apt-get update -qq
@@ -16,16 +17,10 @@ sudo apt-get install -y -qq git docker.io docker-cli
 sudo usermod -aG docker,dialout "$USER"
 sudo systemctl enable --now docker
 
-echo "--- Repositories"
-sudo mkdir -p $BASE/src $BASE/data $BASE/etc/nibepi $BASE/tmp
+echo "--- Repository"
+sudo mkdir -p $BASE/src $BASE/etc/nibepi $BASE/tmp
 sudo chown -R "$USER:$USER" $BASE
-cd $BASE/src
-[ -d nibepi-docker ] || git clone $GH/nibepi-docker.git
-cd nibepi-docker
-[ -d nibepi ] || git clone $GH/nibepi-backend.git nibepi
-[ -d node-red-contrib-nibepi ] || git clone $GH/node-red-contrib-nibepi.git
-cd $BASE/data
-[ -d nibepi-flow ] || git clone $GH/nibepi-flow.git
+[ -d $SRC ] || git clone $REPO $SRC
 
 echo "--- UART for the RS485 HAT"
 BOOT=/boot/firmware
@@ -41,11 +36,11 @@ if ! grep -q '^enable_uart=1' $BOOT/config.txt; then
 fi
 
 echo "--- Docker image (takes a while on a Pi Zero 2 W)"
-cd $BASE/src/nibepi-docker
+cd $SRC
 sudo docker build -t nibepi-nodered .
 
 echo ""
 echo "Done. Next:"
-echo "  1. Copy examples/config.example.json to $BASE/etc/nibepi/config.json and fill it in"
+echo "  1. cp $SRC/examples/config.example.json $BASE/etc/nibepi/config.json  and fill it in"
 echo "  2. sudo reboot"
-echo "  3. scripts/run_nibepi.sh"
+echo "  3. $SRC/scripts/run_nibepi.sh"

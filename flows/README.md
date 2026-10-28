@@ -3,7 +3,8 @@ Flows.json for NibePi nodes in Node-RED
 
 > **CZ fork (Samot89)** of [fnordpojk/nibepi-flow](https://github.com/fnordpojk/nibepi-flow),
 > which continues [anerdins/nibepi-flow](https://github.com/anerdins/nibepi-flow).
-> The flows are unchanged. Setup: [Samot89/nibepi-docker](https://github.com/Samot89/nibepi-docker).
+> Adds Czech tab/group/label names, the Čeština language option and the
+> Home Assistant (MQTT) price source. Part of [Samot89/nibepi-cz](https://github.com/Samot89/nibepi-cz), setup there.
 
 This fork carries the VV-AI hot water dashboard from
 [pizzihelmet/nibepi-flow](https://github.com/pizzihelmet/nibepi-flow), imported

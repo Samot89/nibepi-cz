@@ -7,9 +7,11 @@
 #
 #   --copy-config user@old-host   copy /etc/nibepi/config.json from an old NibePi first
 #
-# Rebuild after code changes: cd /opt/nibepi/src/nibepi-docker && sudo docker build -t nibepi-nodered .
+# Update:  cd /opt/nibepi/src/nibepi-cz && git pull && sudo docker build -t nibepi-nodered . && ./scripts/run_nibepi.sh
 
 set -e
+
+SRC=$(cd "$(dirname "$0")/.." && pwd)
 
 if [ "$1" = "--copy-config" ] && [ -n "$2" ]; then
     scp "$2:/etc/nibepi/config.json" /opt/nibepi/etc/nibepi/config.json
@@ -21,7 +23,7 @@ sudo docker run -dit --name nibepi --restart unless-stopped \
   --device /dev/ttyAMA0:/dev/ttyAMA0 \
   --group-add 20 \
   -e TZ=Europe/Prague \
-  -v /opt/nibepi/data/nibepi-flow:/data \
+  -v "$SRC/flows":/data \
   -v /opt/nibepi/etc/nibepi:/etc/nibepi \
   -v /opt/nibepi/tmp:/tmp \
   -p 1880:1880 \

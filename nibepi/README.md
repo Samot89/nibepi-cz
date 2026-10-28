@@ -3,7 +3,7 @@
 > **CZ fork (Samot89)** of [fnordpojk/nibepi-backend](https://github.com/fnordpojk/nibepi-backend),
 > which continues [anerdins/nibepi](https://github.com/anerdins/nibepi).
 > Adds `subscribeMQTT()` for MQTT topics outside `config.mqtt.topic`, used by the
-> `mqtt_ha` price source. Setup: [Samot89/nibepi-docker](https://github.com/Samot89/nibepi-docker).
+> `mqtt_ha` price source. Part of [Samot89/nibepi-cz](https://github.com/Samot89/nibepi-cz), setup there.
 
 The core of NibePi: everything between a Nibe heat pump and Node-RED. It speaks
 the wire protocol, decodes and encodes registers, keeps a register database per
