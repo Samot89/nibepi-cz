@@ -419,7 +419,7 @@
         "type": "ui_group",
         "name": "Graf S1",
         "tab": "ad3904c7.ceae48",
-        "order": 6,
+        "order": 8,
         "disp": false,
         "width": "12",
         "collapse": false
@@ -470,7 +470,7 @@
         "type": "ui_group",
         "name": "Nastavení topení",
         "tab": "ad3904c7.ceae48",
-        "order": 4,
+        "order": 6,
         "disp": true,
         "width": "12",
         "collapse": false
@@ -480,7 +480,7 @@
         "type": "ui_group",
         "name": "Nastavení TUV",
         "tab": "ad3904c7.ceae48",
-        "order": 5,
+        "order": 7,
         "disp": false,
         "width": "12",
         "collapse": false
@@ -748,7 +748,7 @@
         "type": "ui_group",
         "name": "Cena elektřiny S1",
         "tab": "ad3904c7.ceae48",
-        "order": 7,
+        "order": 9,
         "disp": false,
         "width": "12",
         "collapse": false
@@ -758,7 +758,7 @@
         "type": "ui_group",
         "name": "Cena elektřiny S2",
         "tab": "ad3904c7.ceae48",
-        "order": 8,
+        "order": 10,
         "disp": false,
         "width": "12",
         "collapse": false
@@ -917,7 +917,7 @@
         "type": "ui_group",
         "name": "Graf S2",
         "tab": "ad3904c7.ceae48",
-        "order": 9,
+        "order": 11,
         "disp": false,
         "width": "12",
         "collapse": false
@@ -1046,7 +1046,7 @@
         "type": "ui_group",
         "name": "Nastavení bazénu",
         "tab": "ad3904c7.ceae48",
-        "order": 10,
+        "order": 12,
         "disp": false,
         "width": "12",
         "collapse": false,
@@ -1067,7 +1067,7 @@
         "type": "ui_group",
         "name": "Prioritní dotop",
         "tab": "ad3904c7.ceae48",
-        "order": 11,
+        "order": 13,
         "disp": false,
         "width": "12",
         "collapse": false,
@@ -1249,7 +1249,7 @@
         "type": "ui_group",
         "name": "Nastavení cen",
         "tab": "ad3904c7.ceae48",
-        "order": 3,
+        "order": 5,
         "disp": false,
         "width": "12",
         "collapse": false,
@@ -26704,6 +26704,830 @@
         "wires": [
             [
                 "b6d98d738f3af266"
+            ]
+        ]
+    },
+    {
+        "id": "65574ca10b4fc8b8",
+        "type": "ui_group",
+        "name": "Home Assistant (MQTT)",
+        "tab": "ad3904c7.ceae48",
+        "order": 3,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "31ec6acc4db71797",
+        "type": "ui_group",
+        "name": "FVE boost",
+        "tab": "ad3904c7.ceae48",
+        "order": 4,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "12e9d7110c77dc45",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_mqtt_ha_info",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3460,
+        "wires": [
+            [
+                "01a7d3cc83352f51"
+            ]
+        ]
+    },
+    {
+        "id": "01a7d3cc83352f51",
+        "type": "ui_text",
+        "z": "960078e.e3e6d88",
+        "group": "65574ca10b4fc8b8",
+        "order": 1,
+        "width": "12",
+        "height": "3",
+        "name": "price_mqtt_ha_info",
+        "label": "{{msg.label}}",
+        "format": "",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1150,
+        "y": 3460,
+        "wires": []
+    },
+    {
+        "id": "7783c7bd327a2433",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "mqtt_ha_topic",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 3520,
+        "wires": [
+            [
+                "83d4d9679219fb60"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "83d4d9679219fb60",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_mqtt_ha_topic",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3520,
+        "wires": [
+            [
+                "84f53c5aa638d01f"
+            ]
+        ]
+    },
+    {
+        "id": "84f53c5aa638d01f",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_mqtt_ha_topic",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "65574ca10b4fc8b8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "text",
+        "delay": "0",
+        "topic": "mqtt_ha_topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 3520,
+        "wires": [
+            [
+                "7783c7bd327a2433"
+            ]
+        ]
+    },
+    {
+        "id": "56eb83d0704b33d9",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "mqtt_ha_vc",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 3580,
+        "wires": [
+            [
+                "5c2f363692cbca7d"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "5c2f363692cbca7d",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_mqtt_ha_vc",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3580,
+        "wires": [
+            [
+                "97aa9156f17a7fc0"
+            ]
+        ]
+    },
+    {
+        "id": "97aa9156f17a7fc0",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_mqtt_ha_vc",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "65574ca10b4fc8b8",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "number",
+        "delay": "0",
+        "topic": "mqtt_ha_vc",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 3580,
+        "wires": [
+            [
+                "56eb83d0704b33d9"
+            ]
+        ]
+    },
+    {
+        "id": "799a01bcd978aea9",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "mqtt_ha_c",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 3640,
+        "wires": [
+            [
+                "a80b7db00353bc40"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a80b7db00353bc40",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_mqtt_ha_c",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3640,
+        "wires": [
+            [
+                "df598eca8b7dcc5e"
+            ]
+        ]
+    },
+    {
+        "id": "df598eca8b7dcc5e",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_mqtt_ha_c",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "65574ca10b4fc8b8",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "number",
+        "delay": "0",
+        "topic": "mqtt_ha_c",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 3640,
+        "wires": [
+            [
+                "799a01bcd978aea9"
+            ]
+        ]
+    },
+    {
+        "id": "30cb4114065df499",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "mqtt_ha_n",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 3700,
+        "wires": [
+            [
+                "bc58c37aeacb7fb7"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "bc58c37aeacb7fb7",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_mqtt_ha_n",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3700,
+        "wires": [
+            [
+                "a0e2b0fbb85ffc6f"
+            ]
+        ]
+    },
+    {
+        "id": "a0e2b0fbb85ffc6f",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_mqtt_ha_n",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "65574ca10b4fc8b8",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "number",
+        "delay": "0",
+        "topic": "mqtt_ha_n",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 3700,
+        "wires": [
+            [
+                "30cb4114065df499"
+            ]
+        ]
+    },
+    {
+        "id": "a38b3c7b7c0b8957",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "mqtt_ha_e",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 3760,
+        "wires": [
+            [
+                "fefe50a24182322f"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "fefe50a24182322f",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_mqtt_ha_e",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3760,
+        "wires": [
+            [
+                "2dd139cf50c8aca2"
+            ]
+        ]
+    },
+    {
+        "id": "2dd139cf50c8aca2",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_mqtt_ha_e",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "65574ca10b4fc8b8",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "number",
+        "delay": "0",
+        "topic": "mqtt_ha_e",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 3760,
+        "wires": [
+            [
+                "a38b3c7b7c0b8957"
+            ]
+        ]
+    },
+    {
+        "id": "3e04ce01ac073629",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_solar_info",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3820,
+        "wires": [
+            [
+                "0dbb08fe94d5fdf1"
+            ]
+        ]
+    },
+    {
+        "id": "0dbb08fe94d5fdf1",
+        "type": "ui_text",
+        "z": "960078e.e3e6d88",
+        "group": "31ec6acc4db71797",
+        "order": 1,
+        "width": "12",
+        "height": "3",
+        "name": "price_solar_info",
+        "label": "{{msg.label}}",
+        "format": "",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1150,
+        "y": 3820,
+        "wires": []
+    },
+    {
+        "id": "a5b6a1e465498da8",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "solar_enable",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 3880,
+        "wires": [
+            [
+                "03453d98e8c4c7fa"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "03453d98e8c4c7fa",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_solar_enable",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3880,
+        "wires": [
+            [
+                "802528a33d6c39ff"
+            ]
+        ]
+    },
+    {
+        "id": "802528a33d6c39ff",
+        "type": "ui_switch",
+        "z": "960078e.e3e6d88",
+        "name": "price_solar_enable",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "31ec6acc4db71797",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "solar_enable",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 1150,
+        "y": 3880,
+        "wires": [
+            [
+                "a5b6a1e465498da8"
+            ]
+        ]
+    },
+    {
+        "id": "62e4bfc3c662aff9",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "solar_topic",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 3940,
+        "wires": [
+            [
+                "84101a2a1ed70cf0"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "84101a2a1ed70cf0",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_solar_topic",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 3940,
+        "wires": [
+            [
+                "7420cdeed8dbe6e5"
+            ]
+        ]
+    },
+    {
+        "id": "7420cdeed8dbe6e5",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_solar_topic",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "31ec6acc4db71797",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "text",
+        "delay": "0",
+        "topic": "solar_topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 3940,
+        "wires": [
+            [
+                "62e4bfc3c662aff9"
+            ]
+        ]
+    },
+    {
+        "id": "d25a02a868ddbf32",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "solar_high",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 4000,
+        "wires": [
+            [
+                "0a6195aace59fcd0"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "0a6195aace59fcd0",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_solar_high",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 4000,
+        "wires": [
+            [
+                "dba2f8bb4f570cdc"
+            ]
+        ]
+    },
+    {
+        "id": "dba2f8bb4f570cdc",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_solar_high",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "31ec6acc4db71797",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "number",
+        "delay": "0",
+        "topic": "solar_high",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 4000,
+        "wires": [
+            [
+                "d25a02a868ddbf32"
+            ]
+        ]
+    },
+    {
+        "id": "1799be700207297b",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "solar_low",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 4060,
+        "wires": [
+            [
+                "beaf8971c2b99a52"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "beaf8971c2b99a52",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_solar_low",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 4060,
+        "wires": [
+            [
+                "d7939ccc68c1abb5"
+            ]
+        ]
+    },
+    {
+        "id": "d7939ccc68c1abb5",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_solar_low",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "31ec6acc4db71797",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "number",
+        "delay": "0",
+        "topic": "solar_low",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 4060,
+        "wires": [
+            [
+                "1799be700207297b"
+            ]
+        ]
+    },
+    {
+        "id": "4f69b80986148be7",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "solar_summer_temp",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 4120,
+        "wires": [
+            [
+                "585220a419bc0aad"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "585220a419bc0aad",
+        "type": "subflow:f947788.96a2488",
+        "z": "960078e.e3e6d88",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "price_solar_summer_temp",
+                "type": "str"
+            }
+        ],
+        "x": 900,
+        "y": 4120,
+        "wires": [
+            [
+                "01b7624ddf517cea"
+            ]
+        ]
+    },
+    {
+        "id": "01b7624ddf517cea",
+        "type": "ui_text_input",
+        "z": "960078e.e3e6d88",
+        "name": "price_solar_summer_temp",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "31ec6acc4db71797",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "number",
+        "delay": "0",
+        "topic": "solar_summer_temp",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 1150,
+        "y": 4120,
+        "wires": [
+            [
+                "4f69b80986148be7"
             ]
         ]
     }

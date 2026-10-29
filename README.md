@@ -73,7 +73,19 @@ cd /opt/nibepi/src/nibepi-cz && git pull
 sudo docker build -t nibepi-nodered . && ./scripts/run_nibepi.sh
 ```
 
-### config.json for mqtt_ha
+### Price from Home Assistant and PV boost settings
+
+Everything is set in the dashboard, tab **Price**:
+
+- **Datasource** → *Home Assistant (MQTT)*
+- group **Home Assistant (MQTT)**: MQTT topic of the price and the four level limits
+- group **PV boost**: on/off, MQTT topic of the PV surplus (W), the two surplus
+  limits (W) and the outdoor temperature above which only hot water is boosted
+
+In `config.json` these are `price.mqtt_ha_topic`, `mqtt_ha_vc`, `mqtt_ha_c`,
+`mqtt_ha_n`, `mqtt_ha_e`, `solar_enable`, `solar_topic`, `solar_high`, `solar_low`
+and `solar_summer_temp`. Older configs with `mqtt_ha_thresholds` /
+`solar_thresholds` are taken over as the starting values.
 
 ```json
 "connection": { "enable": "serial", "series": "fSeries" },
@@ -81,18 +93,27 @@ sudo docker build -t nibepi-nodered . && ./scripts/run_nibepi.sh
 "price": {
   "enable": true,
   "source": "mqtt_ha",
-  "mqtt_ha_thresholds": { "very_cheap": 3.5, "cheap": 5, "normal": 7, "expensive": 9 },
-  "solar_thresholds": { "very_cheap": 1500, "cheap": 500, "summer_temp": 16 }
+  "mqtt_ha_topic": "nibepi/price/czk",
+  "mqtt_ha_vc": 3.5, "mqtt_ha_c": 5, "mqtt_ha_n": 7, "mqtt_ha_e": 9,
+  "solar_enable": true,
+  "solar_topic": "nibepi/solar/surplus",
+  "solar_high": 1500, "solar_low": 500, "solar_summer_temp": 16
 }
 ```
 
-Prices are compared with `<`: below `very_cheap` is VERY_CHEAP, below `expensive`
+Prices are compared with `<`: below `mqtt_ha_vc` is VERY_CHEAP, below `mqtt_ha_e`
 is EXPENSIVE, anything higher is VERY_EXPENSIVE. The curve offset for each level
 comes from the usual `heat_*_s1` settings. Retained values on
-`nibepi/price/thresholds/*` override the thresholds from `config.json`.
+`nibepi/price/thresholds/*` override the configured limits.
 
-The thresholds are set in `config.json` only; edit it with the container stopped,
-as NibePi writes its in-memory config back.
+With VV-AI control on, PV surplus also heats hot water: from `solar_low` to the
+Normal stop temperature, from `solar_high` to the higher of Lux/Normal. A boost
+starts only when BT7 is at least 3 °C below the target, then runs to the target and
+stops early only after 10 minutes of surplus below `solar_low` (no short compressor
+cycles on a fluctuating surplus).
+
+Edit `config.json` by hand only with the container stopped, as NibePi writes its
+in-memory config back.
 
 ### VV-AI control and the hot water period
 

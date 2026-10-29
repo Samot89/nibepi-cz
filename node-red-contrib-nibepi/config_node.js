@@ -73,6 +73,39 @@ module.exports = function(RED) {
         const t = graphText[name];
         return (t && lang && t[lang]) ? t[lang] : name;
     }
+    // Settings of price.source "mqtt_ha" and the PV boost, editable in the dashboard.
+    // Flat keys because config widgets edit config.price.<key>; the older nested
+    // mqtt_ha_thresholds / solar_thresholds become the defaults, so existing setups keep their values.
+    const haPriceSettings = () => {
+        const config = nibe.getConfig() || {};
+        if(config.price===undefined) config.price = {};
+        const p = config.price;
+        const t = p.mqtt_ha_thresholds || {}, s = p.solar_thresholds || {};
+        const defaults = {
+            mqtt_ha_topic: 'nibepi/price/czk',
+            mqtt_ha_vc: t.very_cheap !== undefined ? Number(t.very_cheap) : 1.0,
+            mqtt_ha_c:  t.cheap      !== undefined ? Number(t.cheap)      : 2.0,
+            mqtt_ha_n:  t.normal     !== undefined ? Number(t.normal)     : 3.0,
+            mqtt_ha_e:  t.expensive  !== undefined ? Number(t.expensive)  : 3.5,
+            solar_enable: true,
+            solar_topic: 'nibepi/solar/surplus',
+            solar_high: s.very_cheap  !== undefined ? Number(s.very_cheap)  : 1500,
+            solar_low:  s.cheap       !== undefined ? Number(s.cheap)       : 500,
+            solar_summer_temp: s.summer_temp !== undefined ? Number(s.summer_temp) : 16
+        };
+        let changed = false;
+        for(const k in defaults) if(p[k]===undefined || p[k]==="") { p[k] = defaults[k]; changed = true; }
+        if(changed) nibe.setConfig(config);
+        // Text inputs deliver strings
+        const num = (k) => { const x = Number(p[k]); return Number.isFinite(x) ? x : defaults[k]; };
+        return {
+            priceTopic: String(p.mqtt_ha_topic).trim() || defaults.mqtt_ha_topic,
+            vc: num('mqtt_ha_vc'), c: num('mqtt_ha_c'), n: num('mqtt_ha_n'), e: num('mqtt_ha_e'),
+            solarEnable: p.solar_enable === true || p.solar_enable === 'true',
+            solarTopic: String(p.solar_topic).trim() || defaults.solar_topic,
+            solarHigh: num('solar_high'), solarLow: num('solar_low'), summerTemp: num('solar_summer_temp')
+        };
+    }
     var series = "";
     var systems = {};
     let adjust = [];
@@ -1918,24 +1951,47 @@ async function vvAiTick() {
                         }
                     }
 
-                    // 4) FVE pretoky (price.source mqtt_ha): pri pretoku >= solar_thresholds.very_cheap
-                    //    ohrev na Lux stop teplotu, pri >= cheap aspon na Normal. Jen s cerstvou hodnotou.
+                    // 4) FVE pretoky (price.source mqtt_ha, FVE boost zapnuty): pri pretoku >= solar_high
+                    //    ohrev na vyssi z Lux/Normal stop teplot, pri >= solar_low na Normal.
+                    //    Hystereze proti kratkym cyklum kompresoru: start jen kdyz je BT7 aspon
+                    //    VV_SOLAR_START_DIFF pod cilem; rozbehnuty ohrev bezi do cile a skonci drive,
+                    //    jen kdyz je pretok pod prahem dele nez VV_SOLAR_LOW_GRACE.
                     if (!wantHeat && aiOk && Number.isFinite(bt7Now) && config.price && config.price.source === 'mqtt_ha') {
-                        const solarCfg = config.price.solar_thresholds || {};
-                        const sHigh = solarCfg.very_cheap !== undefined ? Number(solarCfg.very_cheap) : 1500;
-                        const sLow  = solarCfg.cheap      !== undefined ? Number(solarCfg.cheap)      : 500;
-                        const solar = await nibe.getMQTTData('nibepi/solar/surplus').catch(() => null);
-                        const fresh = solar && Number.isFinite(solar.data) && (ts - solar.timestamp) < 30 * 60000;
-                        if (fresh) {
-                            let t = NaN;
-                            if (solar.data >= sHigh) t = luxStop;
-                            else if (solar.data >= sLow) t = normalStop;
-                            if (Number.isFinite(t) && bt7Now < t) {
-                                targetTemp = t;
-                                wantHeat = true;
-                                nibe.log(`VV-AI: FVE pretok ${solar.data} W -> ohrev TUV na ${t} C`, 'hotwater', 'debug');
+                        const VV_SOLAR_START_DIFF = 3;          // °C
+                        const VV_SOLAR_LOW_GRACE = 10 * 60000;  // ms
+                        const ha = haPriceSettings();
+                        const meta = store.meta;
+                        let active = ha.solarEnable && meta.vvSolarActive === true;
+                        let target = Number(meta.vvSolarTarget);
+                        let t = NaN;
+                        if (ha.solarEnable) {
+                            const solar = await nibe.getMQTTData(ha.solarTopic).catch(() => null);
+                            const fresh = solar && Number.isFinite(solar.data) && (ts - solar.timestamp) < 30 * 60000;
+                            if (fresh && solar.data >= ha.solarHigh) t = Math.max(luxStop, normalStop);
+                            else if (fresh && solar.data >= ha.solarLow) t = normalStop;
+                            if (!Number.isFinite(t)) {
+                                if (active) {
+                                    if (!Number.isFinite(meta.vvSolarLowSince)) meta.vvSolarLowSince = ts;
+                                    if (ts - meta.vvSolarLowSince > VV_SOLAR_LOW_GRACE) active = false;
+                                }
+                            } else {
+                                delete meta.vvSolarLowSince;
+                                if (active) {
+                                    target = Math.max(Number.isFinite(target) ? target : t, t);
+                                } else if (bt7Now < t - VV_SOLAR_START_DIFF) {
+                                    active = true;
+                                    target = t;
+                                    nibe.log(`VV-AI: FVE pretok ${solar.data} W -> ohrev TUV na ${t} C`, 'hotwater', 'debug');
+                                }
                             }
                         }
+                        if (active && Number.isFinite(target) && bt7Now >= target) active = false;
+                        if (active && Number.isFinite(target)) {
+                            targetTemp = target;
+                            wantHeat = true;
+                        }
+                        meta.vvSolarActive = active;
+                        if (active) meta.vvSolarTarget = target; else { delete meta.vvSolarTarget; delete meta.vvSolarLowSince; }
                     }
 
                     // Rate-limit skrivningar till startHW (minst ~1s mellan)
@@ -4227,7 +4283,11 @@ try {
             }
         } else if(config.price.source=="mqtt_ha") {
             nibe.log(`Källan är HA MQTT spot`,'price','debug');
-            const mqttPriceTopic = 'nibepi/price/czk';
+            const ha = haPriceSettings();
+            const mqttPriceTopic = ha.priceTopic;
+            // Topics may have been changed in the dashboard; subscribeMQTT ignores repeats
+            nibe.subscribeMQTT(mqttPriceTopic);
+            if(ha.solarEnable) nibe.subscribeMQTT(ha.solarTopic);
             // Hodinovy cenik dnes+zitra pro planovani VV-AI: [{startsAt, total}] v Kc/kWh
             nibe.subscribeMQTT('nibepi/price/czk_hourly');
             const mqttPriceList = await nibe.getMQTTData('nibepi/price/czk_hourly').catch(() => null);
@@ -4242,7 +4302,7 @@ try {
             try {
                 const mqttPrice = await nibe.getMQTTData(mqttPriceTopic);
                 const priceVal = mqttPrice.data;
-                const thresholds = config.price.mqtt_ha_thresholds || {};
+                // Retained nibepi/price/thresholds/* override the configured thresholds
                 nibe.subscribeMQTT('nibepi/price/thresholds/very_cheap');
                 nibe.subscribeMQTT('nibepi/price/thresholds/cheap');
                 nibe.subscribeMQTT('nibepi/price/thresholds/normal');
@@ -4251,10 +4311,10 @@ try {
                 const dynC  = await nibe.getMQTTData('nibepi/price/thresholds/cheap').catch(() => null);
                 const dynN  = await nibe.getMQTTData('nibepi/price/thresholds/normal').catch(() => null);
                 const dynE  = await nibe.getMQTTData('nibepi/price/thresholds/expensive').catch(() => null);
-                const t1 = (dynVC && !isNaN(dynVC.data)) ? dynVC.data : (thresholds.very_cheap !== undefined ? Number(thresholds.very_cheap) : 1.0);
-                const t2 = (dynC  && !isNaN(dynC.data))  ? dynC.data  : (thresholds.cheap      !== undefined ? Number(thresholds.cheap)      : 2.0);
-                const t3 = (dynN  && !isNaN(dynN.data))  ? dynN.data  : (thresholds.normal     !== undefined ? Number(thresholds.normal)     : 3.0);
-                const t4 = (dynE  && !isNaN(dynE.data))  ? dynE.data  : (thresholds.expensive  !== undefined ? Number(thresholds.expensive)  : 3.5);
+                const t1 = (dynVC && !isNaN(dynVC.data)) ? dynVC.data : ha.vc;
+                const t2 = (dynC  && !isNaN(dynC.data))  ? dynC.data  : ha.c;
+                const t3 = (dynN  && !isNaN(dynN.data))  ? dynN.data  : ha.n;
+                const t4 = (dynE  && !isNaN(dynE.data))  ? dynE.data  : ha.e;
                 nibe.log(`Prahy: VC<${t1} C<${t2} N<${t3} E<${t4} ${dynVC?'[MQTT]':'[static]'}`,'price','debug');
                 let level;
                 if(priceVal < t1)      level = 'VERY_CHEAP';
@@ -4264,17 +4324,17 @@ try {
                 else                   level = 'VERY_EXPENSIVE';
                 nibe.log(`HA spot cena: ${priceVal.toFixed(2)} Kc/kWh, uroven pred FVE: ${level}`,'price','debug');
                 // FVE pretok boost — povysi uroven kdyz jsou dostupne pretekajici Waty
-                const solarCfg = config.price.solar_thresholds || {};
-                const sHigh = solarCfg.very_cheap !== undefined ? Number(solarCfg.very_cheap) : 1500;
-                const sLow  = solarCfg.cheap      !== undefined ? Number(solarCfg.cheap)      : 500;
+                const sHigh = ha.solarHigh;
+                const sLow  = ha.solarLow;
                 // Letni rezim: nad touto venkovni teplotou FVE boostuje jen TUV, ne topeni
-                const summerThreshold = solarCfg.summer_temp !== undefined ? Number(solarCfg.summer_temp) : 16;
+                const summerThreshold = ha.summerTemp;
                 const outdoorTemp = (data['outside'] !== undefined && data['outside'].data !== undefined) ? data['outside'].data : null;
                 const baseLevel = level;
                 let fveActive = false;
                 let fveLevel = level;
                 try {
-                    const solarData = await nibe.getMQTTData('nibepi/solar/surplus');
+                    if(!ha.solarEnable) throw new Error('FVE boost vypnut');
+                    const solarData = await nibe.getMQTTData(ha.solarTopic);
                     const surplusW = solarData.data;
                     if(surplusW >= sHigh) {
                         fveLevel = 'VERY_CHEAP';
@@ -4290,7 +4350,7 @@ try {
                         nibe.log(`FVE: ${surplusW} W < ${sLow} W -> bez vlivu`,'price','debug');
                     }
                 } catch(solarErr) {
-                    nibe.log(`FVE pretok nedostupny, pouzivam jen spot cenu`,'price','debug');
+                    nibe.log(ha.solarEnable ? `FVE pretok nedostupny, pouzivam jen spot cenu` : `FVE boost vypnut`,'price','debug');
                 }
                 const isSummer = fveActive && outdoorTemp !== null && outdoorTemp >= summerThreshold;
                 if(isSummer) {
@@ -5650,6 +5710,8 @@ const checkTranslation = (node) => {
     }
     text = require(`./language-${config.system.language}.json`)
     node.context().global.set(`translate`, translate);
+    // Fill in the mqtt_ha / PV boost defaults so their dashboard fields have values
+    haPriceSettings();
 }
     console.log(text.starting)
 

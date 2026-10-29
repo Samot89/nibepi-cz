@@ -114,29 +114,48 @@ Posílá do MQTT:
 | `nibepi/solar/surplus` | průměrné FVE přetoky ve W |
 | `nibepi/price/thresholds/*` | volitelně: prahy hladin, **přepíší** hodnoty z configu |
 
-A v `config.json`:
+### Nastavení v dashboardu
+
+Vše se nastavuje na záložce **Cena elektřiny**:
+
+- **Zdroj cen** → *Home Assistant (MQTT)*
+- skupina **Home Assistant (MQTT)**: MQTT topic s cenou a čtyři prahy hladin
+- skupina **FVE boost**: zapnutí/vypnutí, MQTT topic s přetoky (W), dva prahy
+  přetoku (W) a venkovní teplota, nad kterou přetoky zvedají jen TUV
+
+V `config.json` jsou to klíče `price.mqtt_ha_topic`, `mqtt_ha_vc`, `mqtt_ha_c`,
+`mqtt_ha_n`, `mqtt_ha_e`, `solar_enable`, `solar_topic`, `solar_high`, `solar_low`
+a `solar_summer_temp`. Starší config s `mqtt_ha_thresholds` / `solar_thresholds`
+se převezme jako výchozí hodnoty.
 
 ```json
 "price": {
   "enable": true,
   "source": "mqtt_ha",
-  "mqtt_ha_thresholds": { "very_cheap": 3.5, "cheap": 5, "normal": 7, "expensive": 9 },
-  "solar_thresholds": { "very_cheap": 1500, "cheap": 500, "summer_temp": 16 },
+  "mqtt_ha_topic": "nibepi/price/czk",
+  "mqtt_ha_vc": 3.5, "mqtt_ha_c": 5, "mqtt_ha_n": 7, "mqtt_ha_e": 9,
+  "solar_enable": true,
+  "solar_topic": "nibepi/solar/surplus",
+  "solar_high": 1500, "solar_low": 500, "solar_summer_temp": 16,
   "enable_heat_s1": true,
   "heat_very_cheap_s1": 3, "heat_cheap_s1": 2, "heat_normal_s1": 0,
   "heat_expensive_s1": -3, "heat_very_expensive_s1": -4
 }
 ```
 
-Cena pod `very_cheap` znamená VERY_CHEAP, pod `cheap` CHEAP, pod `normal`
-NORMAL, pod `expensive` EXPENSIVE a cokoliv vyššího VERY_EXPENSIVE. Podle
+Cena pod `mqtt_ha_vc` znamená VERY_CHEAP, pod `mqtt_ha_c` CHEAP, pod `mqtt_ha_n`
+NORMAL, pod `mqtt_ha_e` EXPENSIVE a cokoliv vyššího VERY_EXPENSIVE. Podle
 hladiny se posune topná křivka o hodnotu `heat_*_s1`. Když cena v MQTT chybí,
 posun se vrátí na 0 a TUV na Normal.
 
-Zdroj jde zvolit i v dashboardu: Cena elektřiny → Zdroj cen → **Home Assistant (MQTT)**.
-Prahy hladin se nastavují jen v `config.json`. Upravujte ho při zastaveném
-kontejneru (`sudo docker stop nibepi`), jinak NibePi změny přepíše hodnotami
-z paměti.
+**FVE boost TUV** (s řízením VV-AI): přetok od `solar_low` ohřeje TUV na vypínací
+teplotu Normal, od `solar_high` na vyšší z Lux/Normal. Ohřev se spustí, jen když
+je BT7 aspoň 3 °C pod cílem, pak běží až do cíle a předčasně skončí, jen když je
+přetok déle než 10 minut pod `solar_low`. Při kolísajících přetocích tak nevznikají
+krátké cykly kompresoru.
+
+Ručně upravujte `config.json` jen při zastaveném kontejneru
+(`sudo docker stop nibepi`), jinak NibePi změny přepíše hodnotami z paměti.
 
 V čerpadle vypněte **Smart Price Adaption** (menu 4.1.6), aby se dvě cenové
 regulace nepraly.

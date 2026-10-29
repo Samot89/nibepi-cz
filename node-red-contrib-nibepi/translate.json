@@ -1381,6 +1381,78 @@
       "EN": "S-Series",
       "DE": "S-Serie",
       "CZ": "Řada S"
+    },
+    "price_mqtt_ha_info": {
+      "SE": "<p><b>Home Assistant (MQTT)</b></p><br>Pris per kWh som Home Assistant publicerar på MQTT (källa <i>Home Assistant (MQTT)</i>). Gränserna avgör prisnivån: under gränsen = den nivån, över den sista = mycket dyrt.",
+      "EN": "<p><b>Home Assistant (MQTT)</b></p><br>Price per kWh that Home Assistant publishes on MQTT (source <i>Home Assistant (MQTT)</i>). The limits set the price level: below a limit = that level, above the last one = very expensive.",
+      "DE": "<p><b>Home Assistant (MQTT)</b></p><br>Preis pro kWh, den Home Assistant per MQTT sendet (Quelle <i>Home Assistant (MQTT)</i>). Die Grenzen bestimmen die Preisstufe: unter einer Grenze = diese Stufe, über der letzten = sehr teuer.",
+      "CZ": "<p><b>Home Assistant (MQTT)</b></p><br>Cena za kWh, kterou Home Assistant posílá přes MQTT (zdroj <i>Home Assistant (MQTT)</i>). Prahy určují cenovou hladinu: pod prahem = daná hladina, nad posledním = velmi vysoká cena."
+    },
+    "price_mqtt_ha_topic": {
+      "SE": "<b>MQTT-topic för pris</b>",
+      "EN": "<b>MQTT topic for the price</b>",
+      "DE": "<b>MQTT-Topic für den Preis</b>",
+      "CZ": "<b>MQTT topic s cenou</b>"
+    },
+    "price_mqtt_ha_vc": {
+      "SE": "<b>Mycket billigt under</b>",
+      "EN": "<b>Very cheap below</b>",
+      "DE": "<b>Sehr günstig unter</b>",
+      "CZ": "<b>Velmi nízká cena pod</b>"
+    },
+    "price_mqtt_ha_c": {
+      "SE": "<b>Billigt under</b>",
+      "EN": "<b>Cheap below</b>",
+      "DE": "<b>Günstig unter</b>",
+      "CZ": "<b>Nízká cena pod</b>"
+    },
+    "price_mqtt_ha_n": {
+      "SE": "<b>Normalt under</b>",
+      "EN": "<b>Normal below</b>",
+      "DE": "<b>Normal unter</b>",
+      "CZ": "<b>Normální cena pod</b>"
+    },
+    "price_mqtt_ha_e": {
+      "SE": "<b>Dyrt under</b>",
+      "EN": "<b>Expensive below</b>",
+      "DE": "<b>Teuer unter</b>",
+      "CZ": "<b>Vysoká cena pod</b>"
+    },
+    "price_solar_info": {
+      "SE": "<p><b>Solcellsboost</b></p><br>Överskott från solcellerna (W, från Home Assistant via MQTT) höjer prisnivån för värmen och värmer varmvattnet med VV-AI-styrning. Bara med källan <i>Home Assistant (MQTT)</i>.",
+      "EN": "<p><b>PV boost</b></p><br>PV surplus (W, from Home Assistant over MQTT) raises the price level for heating and heats hot water under VV-AI control. Only with the source <i>Home Assistant (MQTT)</i>.",
+      "DE": "<p><b>PV-Boost</b></p><br>PV-Überschuss (W, von Home Assistant per MQTT) hebt die Preisstufe der Heizung und erwärmt Warmwasser bei VV-AI-Steuerung. Nur mit der Quelle <i>Home Assistant (MQTT)</i>.",
+      "CZ": "<p><b>FVE boost</b></p><br>Přetoky z FVE (W, z Home Assistantu přes MQTT) zvýší cenovou hladinu topení a ohřejí TUV při řízení VV-AI. Jen se zdrojem <i>Home Assistant (MQTT)</i>."
+    },
+    "price_solar_enable": {
+      "SE": "<b>Aktivera solcellsboost</b>",
+      "EN": "<b>Enable PV boost</b>",
+      "DE": "<b>PV-Boost aktivieren</b>",
+      "CZ": "<b>Zapnout FVE boost</b>"
+    },
+    "price_solar_topic": {
+      "SE": "<b>MQTT-topic för överskott (W)</b>",
+      "EN": "<b>MQTT topic for the surplus (W)</b>",
+      "DE": "<b>MQTT-Topic für den Überschuss (W)</b>",
+      "CZ": "<b>MQTT topic s přetoky (W)</b>"
+    },
+    "price_solar_high": {
+      "SE": "<b>Stort överskott från (W)</b><br><i>Mycket billigt, varmvatten till lyx-stopptemperatur</i>",
+      "EN": "<b>Large surplus from (W)</b><br><i>Very cheap, hot water to the luxury stop temperature</i>",
+      "DE": "<b>Großer Überschuss ab (W)</b><br><i>Sehr günstig, Warmwasser bis zur Luxus-Stopptemperatur</i>",
+      "CZ": "<b>Velký přetok od (W)</b><br><i>Velmi nízká cena, TUV na vypínací teplotu Lux</i>"
+    },
+    "price_solar_low": {
+      "SE": "<b>Överskott från (W)</b><br><i>Prisnivån ett steg billigare, varmvatten till normal stopptemperatur</i>",
+      "EN": "<b>Surplus from (W)</b><br><i>Price level one step cheaper, hot water to the normal stop temperature</i>",
+      "DE": "<b>Überschuss ab (W)</b><br><i>Preisstufe eine Stufe günstiger, Warmwasser bis zur Normal-Stopptemperatur</i>",
+      "CZ": "<b>Přetok od (W)</b><br><i>Cenová hladina o stupeň níž, TUV na vypínací teplotu Normal</i>"
+    },
+    "price_solar_summer_temp": {
+      "SE": "<b>Sommarläge från (°C)</b><br><i>Över denna utetemperatur höjer överskottet bara varmvattnet</i>",
+      "EN": "<b>Summer mode from (°C)</b><br><i>Above this outdoor temperature the surplus only boosts hot water</i>",
+      "DE": "<b>Sommermodus ab (°C)</b><br><i>Über dieser Außentemperatur hebt der Überschuss nur das Warmwasser</i>",
+      "CZ": "<b>Letní režim od (°C)</b><br><i>Nad touto venkovní teplotou zvedají přetoky jen TUV, ne topení</i>"
     }
   }
-}
+}
