@@ -7,6 +7,16 @@ the Docker image.
 
 🇨🇿 **Česky:** [README.md](README.md)
 
+## Dashboard screenshots
+
+The dashboard is shown in Czech.
+
+| | |
+|---|---|
+| ![Home](docs/img/uvod.jpg) Home | ![VV-AI](docs/img/vv-ai.jpg) VV-AI hot water learning |
+| ![Price and hot water](docs/img/cena-graf-tuv.jpg) Electricity price and hot water settings | ![Forecast](docs/img/predpoved.jpg) Forecast control |
+| ![Price from Home Assistant](docs/img/cena-mqtt.jpg) Price from Home Assistant | ![PV boost](docs/img/fve-boost.jpg) PV boost |
+
 ## Lineage
 
 | | |

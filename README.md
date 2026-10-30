@@ -6,6 +6,14 @@ Vše v jednom repozitáři: jádro, Node-RED nody, flows i Docker image.
 
 🇬🇧 English: [README.en.md](README.en.md)
 
+## Ukázky dashboardu
+
+| | |
+|---|---|
+| ![Úvod](docs/img/uvod.jpg) Úvod | ![VV-AI](docs/img/vv-ai.jpg) TUV – učící se AI |
+| ![Cena a TUV](docs/img/cena-graf-tuv.jpg) Cena elektřiny a nastavení TUV | ![Předpověď](docs/img/predpoved.jpg) Řízení podle předpovědi |
+| ![Cena z Home Assistantu](docs/img/cena-mqtt.jpg) Cena z Home Assistantu | ![FVE boost](docs/img/fve-boost.jpg) FVE boost |
+
 ## Odkud to je
 
 | | |
