@@ -118,7 +118,7 @@ comes from the usual `heat_*_s1` settings. Retained values on
 
 With VV-AI control on, PV surplus also heats hot water: from `solar_low` to the
 Normal stop temperature, from `solar_high` to the higher of Lux/Normal. A boost
-starts only when BT7 is at least 3 °C below the target, then runs to the target and
+starts only when BT7 is at least 2 °C below the target, then runs to the target and
 stops early only after 10 minutes of surplus below `solar_low` (no short compressor
 cycles on a fluctuating surplus).
 

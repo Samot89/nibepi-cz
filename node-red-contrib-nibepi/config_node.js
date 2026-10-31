@@ -113,6 +113,18 @@ module.exports = function(RED) {
     let weatherOffset = {};
     let indoorOffset = {};
     let priceOffset = {};
+    // Hystereze blokace snizeni krivky pri drahe cene: snizeni se povoli az pri
+    // teplote aspon PRICE_TEMP_HYST nad limitem a zablokuje se pri poklesu na limit.
+    // Bez ni teplota kmitajici na limitu prepisovala offset kazde 3 minuty.
+    const PRICE_TEMP_HYST = 0.2; // °C
+    let priceTempOk = {};
+    function priceReductionAllowed(config, system, inside, setpoint) {
+        if(config.price['enable_temp_'+system]===undefined || config.price['enable_temp_'+system]===false) return true;
+        if(inside===undefined) return false;
+        const limit = Number((setpoint+config.price['temp_low_'+system]).toFixed(2));
+        priceTempOk[system] = priceTempOk[system]===true ? inside.data>limit : inside.data>=limit+PRICE_TEMP_HYST;
+        return priceTempOk[system];
+    }
     let savedGraph = {};
     let savedData = {};
 
@@ -1957,7 +1969,7 @@ async function vvAiTick() {
                     //    VV_SOLAR_START_DIFF pod cilem; rozbehnuty ohrev bezi do cile a skonci drive,
                     //    jen kdyz je pretok pod prahem dele nez VV_SOLAR_LOW_GRACE.
                     if (!wantHeat && aiOk && Number.isFinite(bt7Now) && config.price && config.price.source === 'mqtt_ha') {
-                        const VV_SOLAR_START_DIFF = 3;          // °C
+                        const VV_SOLAR_START_DIFF = 2;          // °C
                         const VV_SOLAR_LOW_GRACE = 10 * 60000;  // ms
                         const ha = haPriceSettings();
                         const meta = store.meta;
@@ -2158,7 +2170,7 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
                             for( var o = 0; o < adjust[i].data.length; o++){
                                 out = out+adjust[i].data[o].data;
                             }
-                            out = out;
+                            nibe.log(`Offset ${system}: ${adjust[i].data.map(d => d.name+'='+d.data).join(', ')} -> ${out}`,'price','debug');
                             nibe.reqData(curveadjust).then(result => {
                                 let config = nibe.getConfig();
                                 if(config.home===undefined) {
@@ -3199,7 +3211,7 @@ if(config.price===undefined) {
                     if(config.price['heat_normal_'+system]!==undefined) heat_adjust = config.price['heat_normal_'+system];
                 } else if(heat_level=="EXPENSIVE") {
                     nibe.log(`Nivån är dyr`,'price','debug');
-                    if(inside!==undefined && (inside.data>(data['inside_set_'+system].data+temp_diff)) || config.price['enable_temp_'+system]===undefined || config.price['enable_temp_'+system]===false) {
+                    if(priceReductionAllowed(config,system,inside,data['inside_set_'+system].data)) {
                     if(heat_enable!==undefined && heat_enable===true) {
                         if(config.price['heat_expensive_'+system]!==undefined) {
                             heat_adjust = config.price['heat_expensive_'+system];
@@ -3210,7 +3222,7 @@ if(config.price===undefined) {
                 } else if(heat_level=="VERY_EXPENSIVE") {
                     nibe.log(`Nivån är väldigt dyr`,'price','debug');
                     if(heat_enable!==undefined && heat_enable===true) {
-                        if(inside!==undefined && (inside.data>(data['inside_set_'+system].data+temp_diff)) || config.price['enable_temp_'+system]===undefined || config.price['enable_temp_'+system]===false) {
+                        if(priceReductionAllowed(config,system,inside,data['inside_set_'+system].data)) {
                             if(config.price['heat_very_expensive_'+system]!==undefined) heat_adjust = config.price['heat_very_expensive_'+system];
                         }
                     }
@@ -3310,7 +3322,7 @@ if (typeof level === "string" && /^-?\d+(\.\d+)?$/.test(level)) level = Number(l
 
                     nibe.log(`Nivån är dyr`,'price','debug');
                     if(hw_enable!==undefined && hw_enable===true) hw_adjust = Number(config.price.hotwater_expensive);
-                    if(inside!==undefined && (inside.data>(data['inside_set_'+system].data+temp_diff)) || config.price['enable_temp_'+system]===undefined || config.price['enable_temp_'+system]===false) {
+                    if(priceReductionAllowed(config,system,inside,data['inside_set_'+system].data)) {
                     if(heat_enable!==undefined && heat_enable===true) {
                         if(config.price['heat_expensive_'+system]!==undefined) {
                             heat_adjust = config.price['heat_expensive_'+system];
@@ -3322,7 +3334,7 @@ if (typeof level === "string" && /^-?\d+(\.\d+)?$/.test(level)) level = Number(l
                     nibe.log(`Nivån är väldigt dyr`,'price','debug');
                     if(hw_enable!==undefined && hw_enable===true) hw_adjust = Number(config.price.hotwater_very_expensive);
                     if(heat_enable!==undefined && heat_enable===true) {
-                        if(inside!==undefined && (inside.data>(data['inside_set_'+system].data+temp_diff)) || config.price['enable_temp_'+system]===undefined || config.price['enable_temp_'+system]===false) {
+                        if(priceReductionAllowed(config,system,inside,data['inside_set_'+system].data)) {
                             if(config.price['heat_very_expensive_'+system]!==undefined) heat_adjust = config.price['heat_very_expensive_'+system];
                         }
                     }

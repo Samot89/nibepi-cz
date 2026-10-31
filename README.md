@@ -158,7 +158,7 @@ posun se vrátí na 0 a TUV na Normal.
 
 **FVE boost TUV** (s řízením VV-AI): přetok od `solar_low` ohřeje TUV na vypínací
 teplotu Normal, od `solar_high` na vyšší z Lux/Normal. Ohřev se spustí, jen když
-je BT7 aspoň 3 °C pod cílem, pak běží až do cíle a předčasně skončí, jen když je
+je BT7 aspoň 2 °C pod cílem, pak běží až do cíle a předčasně skončí, jen když je
 přetok déle než 10 minut pod `solar_low`. Při kolísajících přetocích tak nevznikají
 krátké cykly kompresoru.
 
