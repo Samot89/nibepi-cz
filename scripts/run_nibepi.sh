@@ -17,6 +17,11 @@ if [ "$1" = "--copy-config" ] && [ -n "$2" ]; then
     scp "$2:/etc/nibepi/config.json" /opt/nibepi/etc/nibepi/config.json
 fi
 
+if [ ! -f /opt/nibepi/etc/nibepi/config.json ]; then
+    echo "Chybí config, nejdřív spusťte $SRC/scripts/configure.sh" >&2
+    exit 1
+fi
+
 sudo docker rm -f nibepi nibepi-test 2>/dev/null || true
 # --group-add 20: host group dialout, owner of /dev/ttyAMA0
 sudo docker run -dit --name nibepi --restart unless-stopped \

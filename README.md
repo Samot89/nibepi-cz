@@ -56,42 +56,74 @@ forku nepodílejí, chyby proto prosím nehlaste u nich.
 
 ## Co je potřeba
 
-- Raspberry Pi (ověřeno na **Pi Zero 2 W**, stačí 512 MB RAM) s 64bit
-  Raspberry Pi OS Lite (Debian 12 nebo 13)
-- RS485 HAT na GPIO (UART na pinech 14/15), zapojený do čerpadla
-- MQTT broker (např. Mosquitto add-on v Home Assistantu)
+- Raspberry Pi s Wi-Fi nebo LAN, ověřeno na **Pi Zero 2 W** s 64bit Raspberry Pi OS
+  Lite (Debian 13; starší verze nejsou ověřené)
+- RS485 HAT na GPIO (UART na pinech 14/15)
+- MQTT broker (např. Mosquitto add-on v Home Assistantu) s vlastním uživatelem a heslem
 
 ## Instalace
 
-1. Naflashujte Raspberry Pi OS Lite přes Raspberry Pi Imager a v průvodci
-   nastavte uživatele, WiFi (země CZ) a SSH.
-2. Na Pi:
+Celé to má pět kroků. Vyplnit je potřeba jen údaje, na které se zeptá průvodce.
 
-   ```sh
-   git clone https://github.com/Samot89/nibepi-cz.git
-   cd nibepi-cz
-   ./scripts/setup_pi.sh
-   ```
+### 1. Zapojení k čerpadlu
 
-   Skript nainstaluje Docker, naklonuje repozitář do `/opt/nibepi/src/nibepi-cz`,
-   zapne UART pro HAT (`enable_uart=1`, `dtoverlay=disable-bt`, vypne sériovou
-   konzoli) a sestaví image. Na Pi Zero 2 W to trvá zhruba 10–15 minut.
+⚠️ Před zapojováním vypněte čerpadlo jističem a řiďte se manuálem k čerpadlu.
 
-3. Config:
+Modul připojte ke svorkám čerpadla podle
+[dokumentace Nibe](https://www.nibe.fi/nibedocuments/15050/031725-6.pdf). Svorky
+(12 V, A, B, GND) se u jednotlivých modelů liší. Zapojení závisí i na vašem HATu,
+ověřte si proto i jeho dokumentaci.
 
-   ```sh
-   cp examples/config.example.json /opt/nibepi/etc/nibepi/config.json
-   nano /opt/nibepi/etc/nibepi/config.json
-   ```
+### 2. Zapnutí Modbusu v čerpadle
 
-   Vyplňte hlavně `mqtt` (adresa brokeru, uživatel, heslo), `home.lat` / `home.lon`
-   (souřadnice pro předpověď a východ a západ slunce) a `system.pump` (model
-   čerpadla).
+1. Na displeji čerpadla podržte tlačítko **Zpět** asi 7 sekund, objeví se servisní menu.
+2. Otevřete **5.2 Nastavení systému** (u některých modelů je o úroveň hlouběji).
+3. Skoro na konci seznamu zaškrtněte **Modbus**.
 
-4. `sudo reboot` (kvůli UARTu), pak `/opt/nibepi/src/nibepi-cz/scripts/run_nibepi.sh`.
-5. Dashboard je na `http://<ip-pi>:1880/ui`.
+Čerpadlo může ukázat červený alarm, dokud mu NibePi neodpoví. Při prvním spuštění to
+může trvat pár minut.
 
-NibePi se po restartu Pi spustí samo (Docker `--restart unless-stopped`).
+### 3. Instalace na Pi
+
+Naflashujte Raspberry Pi OS Lite přes Raspberry Pi Imager a v průvodci nastavte
+uživatele, WiFi (země CZ) a SSH. Pak na Pi spusťte:
+
+```sh
+git clone https://github.com/Samot89/nibepi-cz.git
+cd nibepi-cz
+./scripts/setup_pi.sh
+```
+
+Skript nainstaluje Docker, zapne UART pro HAT a sestaví image. Na Pi Zero 2 W to trvá
+zhruba 10–15 minut. Na konci se průvodce zeptá na broker, polohu domu, model čerpadla
+a pokojové čidlo. Průvodce jde spustit znovu: `/opt/nibepi/src/nibepi-cz/scripts/configure.sh`.
+
+### 4. Spuštění
+
+```sh
+sudo reboot
+# po restartu:
+/opt/nibepi/src/nibepi-cz/scripts/run_nibepi.sh
+```
+
+Dashboard je na `http://<ip-pi>:1880/ui`. Po dalších restartech Pi se NibePi spustí samo.
+
+### 5. Ceny, FVE a pokojová teplota z Home Assistantu
+
+Postupujte podle [návodu k automatizacím](examples/home-assistant/README.md).
+
+⚠️ **Node-RED na portu 1880 nemá heslo.** Kdo se k němu dostane, může měnit nastavení
+čerpadla. Nepřesměrovávejte tento port do internetu a pro vzdálený přístup použijte VPN.
+
+### Když to nefunguje
+
+| Co vidíte | Co zkusit |
+|---|---|
+| V dashboardu nejsou data z čerpadla | Modbus zapnutý v menu 5.2, prohozené vodiče A a B, `sudo docker logs -f nibepi` |
+| Alarm „Kom.avb Modbus“ po restartu NibePi | přerušená komunikace; když po pár minutách nezmizí, potvrďte ho na displeji |
+| `Could not connect to MQTT broker` | adresa, uživatel a heslo v průvodci, dostupnost brokeru z Pi |
+| Cena v dashboardu chybí | zdroj cen *Home Assistant (MQTT)*, běžící automatizace v HA |
+| Pokojová teplota chybí | `mqtt_statestream` v HA a stejná entita jako v průvodci |
 
 ### Aktualizace
 
@@ -182,7 +214,7 @@ Záložka *TUV – učící se AI*. Doporučené nastavení:
 | Minimální pokles BT6 | výchozí 3 °C |
 
 ⚠️ S řízením VV-AI NibePi drží v čerpadle **periodu TUV (47134) na 0** a ohřev
-spouští samo (48132). **Když je Pi vypnuté, TUV se neohřívá.** Při vypnutí řízení
+spouští samo (48132). **Když je Pi vypnuté, VV-AI ohřev nespouští.** Čerpadlo může ohřívat podle vlastních teplot, ale při delším výpadku to ověřte. Při vypnutí řízení
 VV-AI se perioda vrátí na uloženou hodnotu (`hotwater.vv_backup_hw_period`).
 Vypínací teplota Lux by měla být v čerpadle vyšší než Normal.
 

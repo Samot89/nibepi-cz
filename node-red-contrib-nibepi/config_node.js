@@ -83,10 +83,10 @@ module.exports = function(RED) {
         const t = p.mqtt_ha_thresholds || {}, s = p.solar_thresholds || {};
         const defaults = {
             mqtt_ha_topic: 'nibepi/price/czk',
-            mqtt_ha_vc: t.very_cheap !== undefined ? Number(t.very_cheap) : 1.0,
-            mqtt_ha_c:  t.cheap      !== undefined ? Number(t.cheap)      : 2.0,
-            mqtt_ha_n:  t.normal     !== undefined ? Number(t.normal)     : 3.0,
-            mqtt_ha_e:  t.expensive  !== undefined ? Number(t.expensive)  : 3.5,
+            mqtt_ha_vc: t.very_cheap !== undefined ? Number(t.very_cheap) : 3.5,
+            mqtt_ha_c:  t.cheap      !== undefined ? Number(t.cheap)      : 5.0,
+            mqtt_ha_n:  t.normal     !== undefined ? Number(t.normal)     : 7.0,
+            mqtt_ha_e:  t.expensive  !== undefined ? Number(t.expensive)  : 9.0,
             solar_enable: true,
             solar_topic: 'nibepi/solar/surplus',
             solar_high: s.very_cheap  !== undefined ? Number(s.very_cheap)  : 1500,

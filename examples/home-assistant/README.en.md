@@ -16,6 +16,7 @@ NibePi over MQTT. NibePi uses them to shift the heating curve and plan hot water
    |---|---|
    | `sensor.current_buy_electricity_price_15min` | the price you pay per kWh, with 15-minute values in its attributes |
    | `sensor.grid_export_power` | instantaneous export to grid in W |
+   | `sensor.indoor_temperature` | room temperature, the same entity as in the setup questions |
    | `sensor.current_spot_electricity_hour_order` | the hour's price rank (negative price boost only) |
    | `sensor.nibe_vvm320_temporary_lux_2` | your pump's register 48132 (negative price boost only) |
 

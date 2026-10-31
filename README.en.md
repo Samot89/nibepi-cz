@@ -60,21 +60,35 @@ The full history of all upstream repositories is kept (merged with
 
 ## Quick start (Raspberry Pi with RS485 HAT)
 
-```sh
-git clone https://github.com/Samot89/nibepi-cz.git
-cd nibepi-cz
-./scripts/setup_pi.sh          # Docker, clone to /opt/nibepi/src/nibepi-cz, UART, image build
-cp examples/config.example.json /opt/nibepi/etc/nibepi/config.json   # then edit it
-sudo reboot
-/opt/nibepi/src/nibepi-cz/scripts/run_nibepi.sh
-```
+Verified on a Pi Zero 2 W with 64-bit Raspberry Pi OS Lite (Debian 13).
 
-Then open `http://<pi>:1880/ui`.
+1. **Wiring.** With the pump switched off at the breaker, connect the HAT to the pump
+   (12 V, A, B, GND differ between models) following
+   [Nibe's documentation](https://www.nibe.fi/nibedocuments/15050/031725-6.pdf) and
+   your HAT's documentation.
+2. **Modbus in the pump.** Hold **Back** for about 7 seconds, open **5.2 System
+   settings** and tick **Modbus**. A red alarm may show until NibePi answers.
+3. **Install.** The script installs Docker, enables the UART, builds the image and
+   then asks for the broker, home location, pump model and room sensor:
 
+   ```sh
+   git clone https://github.com/Samot89/nibepi-cz.git
+   cd nibepi-cz
+   ./scripts/setup_pi.sh
+   sudo reboot
+   /opt/nibepi/src/nibepi-cz/scripts/run_nibepi.sh
+   ```
+
+4. Open `http://<pi>:1880/ui`.
+5. **Home Assistant.** Follow the
+   [automation guide](examples/home-assistant/README.en.md).
+
+⚠️ **Node-RED on port 1880 has no password.** Anyone who reaches it can change the
+pump's settings, so do not forward the port to the internet; use a VPN instead.
+
+- `scripts/configure.sh` runs the setup questions again.
 - `scripts/run_nibepi_test.sh` runs NibePi without the pump, next to an existing
   NibePi, without touching its Home Assistant entities.
-- `examples/home-assistant/nibepi_mqtt.yaml` is the Home Assistant side: price,
-  hourly price list and PV surplus to MQTT.
 
 Update:
 
@@ -128,8 +142,9 @@ in-memory config back.
 ### VV-AI control and the hot water period
 
 With VV-AI control on, NibePi holds the pump's hot water period (register 47134)
-at 0 and starts hot water itself (48132). While the Pi is off, no hot water is
-made. Switching VV-AI control off restores the saved period
+at 0 and starts hot water itself (48132). While the Pi is off, VV-AI starts no
+heating; the pump may still heat by its own temperatures, so check this during a longer
+outage. Switching VV-AI control off restores the saved period
 (`hotwater.vv_backup_hw_period`).
 
 ---

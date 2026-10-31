@@ -12,6 +12,7 @@ podle nich posouvá topnou křivku a plánuje ohřev TUV.
 |---|---|---|
 | `NibePi - nákupní cena -> MQTT` | při každé změně pošle aktuální cenu v Kč/kWh | `nibepi/price/czk` |
 | `NibePi - hodinový ceník -> MQTT` | pošle hodinové průměry na dnes a zítra pro VV-AI | `nibepi/price/czk_hourly` |
+| `mqtt_statestream` | posílá pokojovou teplotu do NibePi | `homeassistant/sensor/<entita>/state` |
 | senzor `PV surplus average` | vyhlazuje přetoky, aby je mraky nepřepínaly | |
 | `NibePi - FVE přetoky -> MQTT` | pošle vyhlazené přetoky ve W | `nibepi/solar/surplus` |
 | `NibePi - boost TUV při záporné ceně` | volitelné: ohřeje TUV při záporné ceně | `nibe/modbus/48132/set` |
@@ -21,6 +22,7 @@ podle nich posouvá topnou křivku a plánuje ohřev TUV.
 - MQTT integrace v Home Assistantu připojená ke stejnému brokeru jako NibePi.
 - Senzor ceny s 15minutovými hodnotami v atributech, například z integrace
   CZ Energy Spot Prices. Hodinový ceník s jiným formátem atributů fungovat nebude.
+- Senzor pokojové teploty pro řízení podle vnitřní teploty.
 - Pro FVE boost senzor okamžitých přetoků do sítě ve W.
 
 ## Instalace
@@ -40,8 +42,12 @@ podle nich posouvá topnou křivku a plánuje ohřev TUV.
    |---|---|
    | `sensor.current_buy_electricity_price_15min` | cena, kterou platíte za kWh, včetně poplatků |
    | `sensor.grid_export_power` | okamžité přetoky do sítě ve W |
+   | `sensor.indoor_temperature` | pokojová teplota, stejná entita jako v průvodci nastavením |
    | `sensor.current_spot_electricity_hour_order` | pořadí hodiny podle ceny (jen boost při záporné ceně) |
    | `sensor.nibe_vvm320_temporary_lux_2` | registr 48132 vašeho čerpadla (jen boost při záporné ceně) |
+
+   `mqtt_statestream` může být v `configuration.yaml` jen jednou. Pokud už ho používáte,
+   přidejte entitu do stávající konfigurace.
 
    Boost při záporné ceně nepotřebujete? Celou poslední automatizaci smažte.
 

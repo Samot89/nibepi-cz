@@ -13,7 +13,9 @@ SRC=$BASE/src/nibepi-cz
 
 echo "--- Packages"
 sudo apt-get update -qq
-sudo apt-get install -y -qq git docker.io docker-cli
+sudo apt-get install -y -qq git python3 docker.io
+# Na novějších systémech je klient Dockeru v samostatném balíku
+apt-cache show docker-cli >/dev/null 2>&1 && sudo apt-get install -y -qq docker-cli
 sudo usermod -aG docker,dialout "$USER"
 sudo systemctl enable --now docker
 
@@ -40,7 +42,10 @@ cd $SRC
 sudo docker build -t nibepi-nodered .
 
 echo ""
-echo "Done. Next:"
-echo "  1. cp $SRC/examples/config.example.json $BASE/etc/nibepi/config.json  and fill it in"
-echo "  2. sudo reboot"
-echo "  3. $SRC/scripts/run_nibepi.sh"
+echo "--- Nastavení"
+"$SRC/scripts/configure.sh"
+
+echo ""
+echo "Hotovo. Zbývá:"
+echo "  1. sudo reboot"
+echo "  2. $SRC/scripts/run_nibepi.sh"

@@ -71,23 +71,23 @@
         "source": "mqtt"
       }
     ],
-    "lat": "50.0755",
-    "lon": "14.4378",
+    "lat": "",
+    "lon": "",
     "size": 90,
     "hours_s1": 8
   },
   "mqtt": {
     "enable": true,
-    "host": "192.168.1.10",
+    "host": "",
     "port": "1883",
-    "user": "nibepi",
-    "pass": "CHANGE_ME",
+    "user": "",
+    "pass": "",
     "topic": "nibe/modbus/",
     "discovery": true
   },
   "system": {
     "readonly": false,
-    "language": "EN",
+    "language": "CZ",
     "pump": "VVM320",
     "firmware": 9700,
     "auto_update": true
@@ -172,22 +172,18 @@
     "veryexpensive": 40,
     "sensor_s1": "Indoor temperature",
     "enable_temp_s1": true,
-    "mqtt_ha_thresholds": {
-      "very_cheap": 3.5,
-      "cheap": 5,
-      "normal": 7,
-      "expensive": 9
-    },
-    "solar_thresholds": {
-      "very_cheap": 1500,
-      "cheap": 500,
-      "summer_temp": 16
-    },
-    "solar_high_s1": 1500,
-    "solar_low_s1": 500,
-    "solar_enable_s1": true,
     "prio_cost": "",
-    "prio_enable": false
+    "prio_enable": false,
+    "mqtt_ha_topic": "nibepi/price/czk",
+    "mqtt_ha_vc": 3.5,
+    "mqtt_ha_c": 5,
+    "mqtt_ha_n": 7,
+    "mqtt_ha_e": 9,
+    "solar_enable": true,
+    "solar_topic": "nibepi/solar/surplus",
+    "solar_high": 1500,
+    "solar_low": 1000,
+    "solar_summer_temp": 16
   },
   "weather": {
     "enable_s1": true,

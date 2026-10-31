@@ -15,6 +15,14 @@
 #   sensor.current_buy_electricity_price_15min  cena za kWh včetně poplatků,
 #                                               např. z integrace CZ Energy Spot Prices
 #   sensor.grid_export_power                    okamžité přetoky do sítě ve W
+#   sensor.indoor_temperature                   pokojová teplota
+
+# --- configuration.yaml: pokojová teplota pro NibePi (nahraďte svou entitou)
+mqtt_statestream:
+  base_topic: homeassistant
+  include:
+    entities:
+      - sensor.indoor_temperature
 
 # --- configuration.yaml: vyhlazení přetoků, aby mraky nepřepínaly cenovou hladinu
 sensor:
