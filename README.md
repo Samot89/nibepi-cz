@@ -42,7 +42,7 @@ forku nepodílejí, chyby proto prosím nehlaste u nich.
   cenu v Kč/kWh z MQTT, kam ji posílá Home Assistant, a podle vašich prahů z ní
   určí jednu z pěti cenových hladin. Dá se zvolit i v dashboardu.
 - **FVE boost.** Přetoky z FVE posílané přes MQTT zvednou cenovou hladinu
-  (≥ 1500 W → VERY_CHEAP, ≥ 500 W → o stupeň výš). Nad 16 °C venku se boostuje
+  (≥ 1500 W → VERY_CHEAP, ≥ 1000 W → o stupeň výš, obojí nastavitelné). Nad 16 °C venku se boostuje
   jen ohřev TUV, ne topení.
 - **VV-AI (učení TUV) s cenami z Home Assistantu.** Hodinový ceník na dnešek a
   zítřek z HA umožní VV-AI plánovat ohřev TUV do nejlevnějších hodin. FVE přetoky
@@ -177,7 +177,7 @@ se převezme jako výchozí hodnoty.
   "mqtt_ha_vc": 3.5, "mqtt_ha_c": 5, "mqtt_ha_n": 7, "mqtt_ha_e": 9,
   "solar_enable": true,
   "solar_topic": "nibepi/solar/surplus",
-  "solar_high": 1500, "solar_low": 500, "solar_summer_temp": 16,
+  "solar_high": 1500, "solar_low": 1000, "solar_summer_temp": 16,
   "enable_heat_s1": true,
   "heat_very_cheap_s1": 3, "heat_cheap_s1": 2, "heat_normal_s1": 0,
   "heat_expensive_s1": -3, "heat_very_expensive_s1": -4

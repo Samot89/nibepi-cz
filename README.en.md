@@ -46,7 +46,7 @@ The full history of all upstream repositories is kept (merged with
   current price in CZK/kWh from MQTT, published by Home Assistant, with your own
   thresholds for the five price levels. Selectable in the dashboard.
 - **PV surplus boost.** A PV export reading on MQTT raises the price level
-  (≥ 1500 W → VERY_CHEAP, ≥ 500 W → one step up). Above 16 °C outdoors only hot
+  (≥ 1500 W → VERY_CHEAP, ≥ 1000 W → one step up, both adjustable). Above 16 °C outdoors only hot
   water is boosted, not heating.
 - **VV-AI (hot water learning) with Home Assistant prices.** An hourly price list
   for today and tomorrow from HA lets VV-AI plan hot water into the cheapest hours;
@@ -121,7 +121,7 @@ and `solar_summer_temp`. Older configs with `mqtt_ha_thresholds` /
   "mqtt_ha_vc": 3.5, "mqtt_ha_c": 5, "mqtt_ha_n": 7, "mqtt_ha_e": 9,
   "solar_enable": true,
   "solar_topic": "nibepi/solar/surplus",
-  "solar_high": 1500, "solar_low": 500, "solar_summer_temp": 16
+  "solar_high": 1500, "solar_low": 1000, "solar_summer_temp": 16
 }
 ```
 
