@@ -112,7 +112,8 @@ sudo docker build -t nibepi-nodered . && ./scripts/run_nibepi.sh
 
 ## Ceny a FVE z Home Assistantu
 
-V HA použijte [examples/home-assistant/nibepi_mqtt.yaml](examples/home-assistant/nibepi_mqtt.yaml).
+V HA použijte [examples/home-assistant/nibepi_mqtt.yaml](examples/home-assistant/nibepi_mqtt.yaml),
+postup je v [návodu k automatizacím](examples/home-assistant/README.md).
 Posílá do MQTT:
 
 | topic | obsah |

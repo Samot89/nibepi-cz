@@ -1,34 +1,37 @@
-# Home Assistant side of price.source "mqtt_ha".
-# Works as a package: save as config/packages/nibepi.yaml and enable
+# Home Assistant pro zdroj cen "Home Assistant (MQTT)" a FVE boost.
+# Návod je v README.md v této složce.
+#
+# Použití jako package: uložte jako config/packages/nibepi.yaml a zapněte
 #   homeassistant:
 #     packages: !include_dir_named packages
-# or copy the sensor and the automations into your own files.
-# NibePi reads these MQTT topics (retained):
-#   nibepi/price/czk                    current electricity price, CZK/kWh
-#   nibepi/price/czk_hourly             hourly prices today + tomorrow for VV-AI, [{startsAt, total}]
-#   nibepi/solar/surplus                PV surplus (export to grid), W, averaged
-#   nibepi/price/thresholds/{very_cheap,cheap,normal,expensive}   optional, overrides
-#                                       config.price.mqtt_ha_thresholds
+# nebo senzor a automatizace zkopírujte do vlastních souborů.
 #
-# Replace the entity ids with your own:
-#   sensor.current_buy_electricity_price_15min  price you pay per kWh (spot + fees),
-#                                               e.g. from the "CZ Energy Spot Prices" integration
-#   sensor.grid_export_power                    instantaneous export to grid in W
+# NibePi čte tyto MQTT topicy (retained):
+#   nibepi/price/czk          aktuální nákupní cena, Kč/kWh
+#   nibepi/price/czk_hourly   hodinové ceny dnes + zítra pro VV-AI, [{startsAt, total}]
+#   nibepi/solar/surplus      průměrné FVE přetoky do sítě, W
+#
+# Nahraďte ID entit svými:
+#   sensor.current_buy_electricity_price_15min  cena za kWh včetně poplatků,
+#                                               např. z integrace CZ Energy Spot Prices
+#   sensor.grid_export_power                    okamžité přetoky do sítě ve W
 
-# --- configuration.yaml: smooth the PV surplus so clouds do not toggle the level
+# --- configuration.yaml: vyhlazení přetoků, aby mraky nepřepínaly cenovou hladinu
 sensor:
   - platform: statistics
     name: "PV surplus average"
     unique_id: pv_surplus_average
     entity_id: sensor.grid_export_power
-    state_characteristic: mean
+    state_characteristic: average_step
     max_age:
       minutes: 10
+    sampling_size: 1000
+    precision: 2
 
 # --- automations.yaml
 automation:
   - id: nibepi_spot_price_mqtt
-    alias: "NibePi - electricity price -> MQTT"
+    alias: "NibePi - nákupní cena -> MQTT"
     triggers:
       - trigger: state
         entity_id: sensor.current_buy_electricity_price_15min
@@ -45,11 +48,11 @@ automation:
           retain: true
     mode: single
 
-  # Hourly averages of the 15-minute prices (attributes of the price sensor, today and
-  # tomorrow). VV-AI keeps one price per hour of the week, so 15-minute values would
-  # leave only the last quarter of each hour.
+  # Hodinové průměry 15minutových cen (atributy cenového senzoru, dnes a zítra).
+  # VV-AI si drží jednu cenu na hodinu týdne, 15minutové hodnoty by z každé hodiny
+  # nechaly jen poslední čtvrthodinu.
   - id: nibepi_hourly_price_list_mqtt
-    alias: "NibePi - hourly price list -> MQTT"
+    alias: "NibePi - hodinový ceník -> MQTT"
     triggers:
       - trigger: state
         entity_id: sensor.current_buy_electricity_price_15min
@@ -78,7 +81,7 @@ automation:
     mode: single
 
   - id: nibepi_pv_surplus_mqtt
-    alias: "NibePi - PV surplus -> MQTT"
+    alias: "NibePi - FVE přetoky -> MQTT"
     triggers:
       - trigger: state
         entity_id: sensor.pv_surplus_average
@@ -92,10 +95,10 @@ automation:
           retain: true
     mode: single
 
-  # Optional: hot water boost (register 48132 = 4, temporary lux) at a negative price,
-  # only in the 1st or 2nd cheapest hour of the day and only when no boost is running.
+  # Volitelné: boost TUV (registr 48132 = 4, dočasný Lux) při záporné ceně, jen v 1. nebo
+  # 2. nejlevnější hodině dne a jen když žádný boost neběží.
   - id: nibepi_hw_boost_negative_price
-    alias: "NibePi - hot water boost at negative price"
+    alias: "NibePi - boost TUV při záporné ceně"
     triggers:
       - trigger: state
         entity_id: sensor.current_buy_electricity_price_15min
@@ -107,7 +110,7 @@ automation:
       - condition: numeric_state
         entity_id: sensor.current_spot_electricity_hour_order
         below: 3
-      # Register 48132 (Temporary Lux); NibePi 2.0 discovery names it sensor.nibe_<model>_temporary_lux_2
+      # Registr 48132 (Temporary Lux); discovery NibePi 2.0 ho pojmenuje sensor.nibe_<model>_temporary_lux_2
       - condition: state
         entity_id: sensor.nibe_vvm320_temporary_lux_2
         state: "0"
