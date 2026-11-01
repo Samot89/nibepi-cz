@@ -1178,7 +1178,7 @@
       "SE": "Begränsa elprisregleringens påverkan med hjälp av en rumsgivare.<br>Ställ in en differens för den lägsta temperaturen som tillåts vid högt elpris för reglering mot ditt rumsbörvärde.",
       "EN": "Limit the influence of the price adaption by means of a room temperature sensor.<br>Set the lowest temperature allowed at high electricity prices.",
       "DE": "Begrenzung der Auswirkung des Strompreises<br>Definiere eine Temperaturdifferenz die auch bei hohem Strompreis nicht unterschritten werden darf.",
-      "CZ": "Omezte vliv přizpůsobení ceně pomocí pokojového čidla.<br>Nastavte nejnižší povolenou teplotu při vysoké ceně elektřiny."
+      "CZ": "Omezte vliv přizpůsobení ceně pomocí pokojového čidla.<br>Nastavte nejnižší povolenou teplotu při vysoké ceně elektřiny.<br>Když je zvoleno „Ingen“ (žádné), použije se pokojové čidlo čerpadla (BT50). Bez připojeného BT50 se topení při vysoké ceně nesnižuje."
     },
     "price_s1_info": {
       "SE": "<p><b>Elprisreglering S1</b></p><br>Välj hur mycket kurvjusteringen ska justeras vid olika prisnivåer.<br>Reglering mot rumsgivare rekommenderas starkt, ibland förekommer det längre perioder av samma låga eller höga pris",

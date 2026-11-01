@@ -3116,6 +3116,12 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
         let inside = data.priceSensor;
         nibe.log(`Startar elprisjustering priceAdjustCurve() för ${data.system}`,'price','debug');
         let config = nibe.getConfig();
+        // No sensor chosen ("Ingen"): the pump's own room sensor BT50, as in indoor and
+        // forecast control. A chosen sensor that gave no value is not replaced by it.
+        const chosenSensor = config.price && config.price['sensor_'+system];
+        if(inside===undefined && (chosenSensor===undefined || chosenSensor==="" || chosenSensor==="Ingen")) {
+            inside = data['inside_'+system];
+        }
         // A read that timed out leaves its register out of data. Skip this run
         // rather than adjust on a value that is not there; the next one reads again.
         const missing = [];
@@ -5932,6 +5938,8 @@ const checkTranslation = (node) => {
 
         })
         var threeminutes = cron.schedule('*/3 * * * *', () => {
+            // On the full hour the hourly job runs the same, and the forecast with it.
+            if(new Date().getMinutes()===0) return;
             if(nibe.core!==undefined && nibe.core.connected!==undefined && nibe.core.connected===true) {
                 updateData();
             }
