@@ -125,6 +125,22 @@ module.exports = function(RED) {
         priceTempOk[system] = priceTempOk[system]===true ? inside.data>limit : inside.data>=limit+PRICE_TEMP_HYST;
         return priceTempOk[system];
     }
+    // Rezim TUV podle ceny se drzi aspon HW_MODE_HOLD_MS. 15minutove ceny kolisajici
+    // kolem prahu jinak prepinaly Normal/Economy kazdou ctvrthodinu.
+    const HW_MODE_HOLD_MS = 60 * 60000;
+    let hwModeChangedTs = 0;
+    function setHwModeHeld(mode) {
+        nibe.reqData(hP.hw_mode).then(result => {
+            if(result.raw_data===mode) return;
+            const left = hwModeChangedTs + HW_MODE_HOLD_MS - Date.now();
+            if(left > 0) {
+                nibe.log(`Rezim TUV ${result.raw_data} drzen jeste ${Math.ceil(left/60000)} min, zmena na ${mode} odlozena`,'price','debug');
+                return;
+            }
+            hwModeChangedTs = Date.now();
+            nibe.setData(hP.hw_mode,mode);
+        }).catch(console.log)
+    }
     let savedGraph = {};
     let savedData = {};
 
@@ -3187,9 +3203,7 @@ if(config.price===undefined) {
 
                 }
                 if(hw_adjust!==undefined) {
-                    nibe.reqData(hP.hw_mode).then(result => {
-                        if(result.raw_data!==hw_adjust) nibe.setData(hP.hw_mode,hw_adjust);
-                    }).catch(console.log)
+                    setHwModeHeld(hw_adjust);
                 }
             } else {
                 sendError('Elprisreglering',`Kunde ej hämta prisnivå från värmepumpen eller funktion avstängd.`);
@@ -3366,9 +3380,7 @@ if (typeof level === "string" && /^-?\d+(\.\d+)?$/.test(level)) level = Number(l
                 priceOffset[system] = heat_adjust;
                 curveAdjust('price',system,heat_adjust);
                 if(hw_adjust!==undefined) {
-                    nibe.reqData(hP.hw_mode).then(result => {
-                        if(result.raw_data!==hw_adjust) nibe.setData(hP.hw_mode,hw_adjust);
-                    }).catch(console.log)
+                    setHwModeHeld(hw_adjust);
                 }
             } else {
                 sendError('Elprisreglering',`Kunde ej hämta prisnivå från värmepumpen.`);
