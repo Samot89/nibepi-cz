@@ -35,7 +35,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "2.0.0-cz.2",
+  "version": "2.0.0-cz.3",
   "engines": {
     "node": ">=20"
   }

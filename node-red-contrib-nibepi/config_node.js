@@ -127,6 +127,24 @@ module.exports = function(RED) {
     }
     // Rezim TUV podle ceny se drzi aspon HW_MODE_HOLD_MS. 15minutove ceny kolisajici
     // kolem prahu jinak prepinaly Normal/Economy kazdou ctvrthodinu.
+    // Snizeni krivky kvuli cene nejvys jednou za PRICE_LEVEL_HOLD_MS od posledni zmeny.
+    // Zvyseni (levnejsi hladina, zruseni snizeni pojistkou teploty) plati hned.
+    // 15minutove ceny kolem prahu jinak menily offset kazdou ctvrthodinu.
+    const PRICE_LEVEL_HOLD_MS = 60 * 60000;
+    let priceLevelChangedTs = {};
+    function holdPriceAdjust(system, adj) {
+        const prev = priceOffset[system];
+        if(prev===undefined || adj===prev) return adj;
+        if(adj < prev) {
+            const left = (priceLevelChangedTs[system] || 0) + PRICE_LEVEL_HOLD_MS - Date.now();
+            if(left > 0) {
+                nibe.log(`Posun ${system} kvuli cene ${prev} drzen jeste ${Math.ceil(left/60000)} min, snizeni na ${adj} odlozeno`,'price','debug');
+                return prev;
+            }
+        }
+        priceLevelChangedTs[system] = Date.now();
+        return adj;
+    }
     const HW_MODE_HOLD_MS = 60 * 60000;
     let hwModeChangedTs = 0;
     function setHwModeHeld(mode) {
@@ -3265,6 +3283,7 @@ if(config.price===undefined) {
                     })
                 }
 
+                heat_adjust = holdPriceAdjust(system, heat_adjust);
                 priceOffset[system] = heat_adjust;
                 curveAdjust('price',system,heat_adjust);
             } else {
@@ -3377,6 +3396,7 @@ if (typeof level === "string" && /^-?\d+(\.\d+)?$/.test(level)) level = Number(l
                         nibe.log(`Värmepump stödjer inte stopp via gradminuter`,'price','debug');
                     })
                 }
+                heat_adjust = holdPriceAdjust(system, heat_adjust);
                 priceOffset[system] = heat_adjust;
                 curveAdjust('price',system,heat_adjust);
                 if(hw_adjust!==undefined) {
