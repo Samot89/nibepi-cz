@@ -1444,6 +1444,13 @@ const handleMQTT = (on,host,port,user,pass,cb) => {
                             subscribed = true;
                             continue;
                         }
+                        // Home Assistant (mqtt_statestream) sends its state words when a sensor
+                        // drops out. Number("unknown") is NaN, stored as a fresh value it broke
+                        // the offset sum and hid the sensor timeout. Keep the last real value.
+                        if(/^(unknown|unavailable|none|nan)$/i.test(message.toString().trim())) {
+                            subscribed = true;
+                            continue;
+                        }
                         let messageString = message.toString().replace(/\,/g,".");
                         if(mqttData[save]===undefined) mqttData[save] = {};
                         mqttData[save].data = Number(messageString);
