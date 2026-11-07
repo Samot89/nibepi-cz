@@ -6,6 +6,12 @@ Vše v jednom repozitáři: jádro, Node-RED nody, flows i Docker image.
 
 🇬🇧 English: [README.en.md](README.en.md)
 
+> [!NOTE]
+> **Projekt je stále ve vývoji.** Běží denně na reálném čerpadle (VVM320), ale
+> funkce se dál ladí a mohou se měnit. Podněty, nalezené chyby i návrhy na
+> vylepšení jsou vítány – založte prosím
+> [issue](https://github.com/Samot89/nibepi-cz/issues) nebo pošlete pull request.
+
 ## Ukázky dashboardu
 
 | | |

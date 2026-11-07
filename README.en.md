@@ -7,6 +7,12 @@ the Docker image.
 
 🇨🇿 **Česky:** [README.md](README.md)
 
+> [!NOTE]
+> **This project is still under development.** It runs daily on a real heat pump
+> (VVM320), but features are still being tuned and may change. Feedback, bug
+> reports and ideas for improvements are welcome – please open an
+> [issue](https://github.com/Samot89/nibepi-cz/issues) or send a pull request.
+
 ## Dashboard screenshots
 
 The dashboard is shown in Czech.
