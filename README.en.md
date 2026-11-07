@@ -215,6 +215,14 @@ git subtree pull --prefix=node-red-contrib-nibepi https://github.com/fnordpojk/n
 git subtree pull --prefix=flows https://github.com/fnordpojk/nibepi-flow.git master
 ```
 
+## ☕ Support
+
+If you like this project and it helped you, you can buy me a coffee:
+
+[![Buy me a coffee via PayPal](https://img.shields.io/badge/PayPal-Buy%20me%20a%20coffee%20%E2%98%95-00457C?logo=paypal&logoColor=white)](https://paypal.me/sulc89)
+
+Thank you! Donations are voluntary, the project stays free.
+
 ## License
 
 MIT, see [LICENSE](LICENSE). Based on [NibePi](https://github.com/anerdins/nibepi) by anerdins (MIT); the original license files are kept in `nibepi/`, `node-red-contrib-nibepi/` and `flows/`.

@@ -240,6 +240,14 @@ sudo docker restart nibepi          # restart
 tail -f /opt/nibepi/tmp/nibepi.log  # debug log NibePi (když je zapnutý)
 ```
 
+## ☕ Podpora
+
+Pokud se ti projekt líbí a pomohl ti, můžeš mi přispět na kafe:
+
+[![Kup mi kafe přes PayPal](https://img.shields.io/badge/PayPal-Kup%20mi%20kafe%20%E2%98%95-00457C?logo=paypal&logoColor=white)](https://paypal.me/sulc89)
+
+Díky! Příspěvek je dobrovolný, projekt zůstává zdarma.
+
 ## Licence
 
 MIT – viz [LICENSE](LICENSE). Projekt vychází z [NibePi](https://github.com/anerdins/nibepi) od anerdins (MIT), jehož licence zůstává zachována i v adresářích `nibepi/`, `node-red-contrib-nibepi/` a `flows/`.
