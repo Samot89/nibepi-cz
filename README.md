@@ -239,3 +239,7 @@ sudo docker logs -f nibepi          # log
 sudo docker restart nibepi          # restart
 tail -f /opt/nibepi/tmp/nibepi.log  # debug log NibePi (když je zapnutý)
 ```
+
+## Licence
+
+MIT – viz [LICENSE](LICENSE). Projekt vychází z [NibePi](https://github.com/anerdins/nibepi) od anerdins (MIT), jehož licence zůstává zachována i v adresářích `nibepi/`, `node-red-contrib-nibepi/` a `flows/`.

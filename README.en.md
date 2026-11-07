@@ -214,3 +214,7 @@ git subtree pull --prefix=nibepi https://github.com/fnordpojk/nibepi-backend.git
 git subtree pull --prefix=node-red-contrib-nibepi https://github.com/fnordpojk/node-red-contrib-nibepi.git master
 git subtree pull --prefix=flows https://github.com/fnordpojk/nibepi-flow.git master
 ```
+
+## License
+
+MIT, see [LICENSE](LICENSE). Based on [NibePi](https://github.com/anerdins/nibepi) by anerdins (MIT); the original license files are kept in `nibepi/`, `node-red-contrib-nibepi/` and `flows/`.
