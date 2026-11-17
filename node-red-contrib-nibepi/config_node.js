@@ -76,6 +76,8 @@ module.exports = function(RED) {
     // Settings of price.source "mqtt_ha" and the PV boost, editable in the dashboard.
     // Flat keys because config widgets edit config.price.<key>; the older nested
     // mqtt_ha_thresholds / solar_thresholds become the defaults, so existing setups keep their values.
+    // Oldest Home Assistant price (nibepi/price/czk) the price control still trusts.
+    const HA_PRICE_MAX_AGE_MS = 60 * 60000;
     const haPriceSettings = () => {
         const config = nibe.getConfig() || {};
         if(config.price===undefined) config.price = {};
@@ -4351,6 +4353,11 @@ try {
             }
             try {
                 const mqttPrice = await nibe.getMQTTData(mqttPriceTopic);
+                // Home Assistant publishes a new price every 15 minutes. A price that has not
+                // changed for longer than this means the source is gone; drop to the
+                // missing-price fallback below instead of steering on an old value.
+                const priceAge = Date.now() - mqttPrice.timestamp;
+                if(!(priceAge <= HA_PRICE_MAX_AGE_MS)) throw new Error(`cena je stara ${Math.round(priceAge/60000)} min`);
                 const priceVal = mqttPrice.data;
                 // Retained nibepi/price/thresholds/* override the configured thresholds
                 nibe.subscribeMQTT('nibepi/price/thresholds/very_cheap');

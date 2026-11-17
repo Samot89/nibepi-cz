@@ -10,7 +10,8 @@ podle nich posouvá topnou křivku a plánuje ohřev TUV.
 
 | Část | Co dělá | MQTT topic |
 |---|---|---|
-| `NibePi - nákupní cena -> MQTT` | při každé změně pošle aktuální cenu v Kč/kWh | `nibepi/price/czk` |
+| `NibePi - nákupní cena -> MQTT` | při každé změně a každých 15 min pošle aktuální cenu v Kč/kWh | `nibepi/price/czk` |
+| `NibePi - cena nedostupná -> smazat cenu v MQTT` | pojistka: když cena 30 min chybí, smaže uloženou cenu | `nibepi/price/czk` |
 | `NibePi - hodinový ceník -> MQTT` | pošle hodinové průměry na dnes a zítra pro VV-AI | `nibepi/price/czk_hourly` |
 | `mqtt_statestream` | posílá pokojovou teplotu do NibePi | `homeassistant/sensor/<entita>/state` |
 | senzor `PV surplus average` | vyhlazuje přetoky, aby je mraky nepřepínaly | |
@@ -22,6 +23,13 @@ podle nich posouvá topnou křivku a plánuje ohřev TUV.
 - MQTT integrace v Home Assistantu připojená ke stejnému brokeru jako NibePi.
 - Senzor ceny s 15minutovými hodnotami v atributech, například z integrace
   CZ Energy Spot Prices. Hodinový ceník s jiným formátem atributů fungovat nebude.
+  Máte-li jen spotovou cenu, dopočítejte v šablonách nákupní cenu jako
+  spot × 1,21 (DPH) + poplatek obchodníka s DPH.
+
+NibePi ignoruje cenu starší než 60 minut a jede pak bez cenového řízení (žádný
+posun křivky podle ceny, TUV Normal). Proto automatizace s cenou posílá cenu i
+každých 15 minut a pojistka smaže uloženou cenu, když je cenový senzor 30 minut
+nedostupný.
 - Senzor pokojové teploty pro řízení podle vnitřní teploty.
 - Pro FVE boost senzor okamžitých přetoků do sítě ve W.
 

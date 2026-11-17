@@ -14,6 +14,12 @@
 # Nahraďte ID entit svými:
 #   sensor.current_buy_electricity_price_15min  cena za kWh včetně poplatků,
 #                                               např. z integrace CZ Energy Spot Prices
+#     Máte-li jen spotovou cenu (sensor.current_spot_electricity_price_15min), dopočítejte
+#     nákupní cenu v šablonách: (spot * 1.21 + poplatek obchodníka s DPH), např.
+#     {{ (states('sensor.current_spot_electricity_price_15min') | float * 1.21 + 0.4235) | round(4) }}
+#
+# NibePi ignoruje cenu starší než 60 minut (cenové řízení pak vypne: posun 0, TUV Normal).
+# Proto automatizace níže posílá cenu i každých 15 minut, když se nezměnila.
 #   sensor.grid_export_power                    okamžité přetoky do sítě ve W
 #   sensor.indoor_temperature                   pokojová teplota
 
@@ -45,6 +51,10 @@ automation:
         entity_id: sensor.current_buy_electricity_price_15min
       - trigger: homeassistant
         event: start
+      # i beze změny ceny, aby NibePi věděl, že je cena čerstvá
+      - trigger: time_pattern
+        minutes: "/15"
+        seconds: "20"
     conditions:
       - condition: template
         value_template: "{{ states('sensor.current_buy_electricity_price_15min') not in ['unknown', 'unavailable', 'None'] }}"
@@ -53,6 +63,24 @@ automation:
         data:
           topic: nibepi/price/czk
           payload: "{{ states('sensor.current_buy_electricity_price_15min') }}"
+          retain: true
+    mode: single
+
+  # Pojistka: cena nedostupná 30 minut -> smazat uloženou cenu, NibePi pak řídí bez ceny
+  # (posun 0, TUV Normal) a po restartu nenačte starou hodnotu.
+  - id: nibepi_price_unavailable_clear
+    alias: "NibePi - cena nedostupná -> smazat cenu v MQTT"
+    triggers:
+      - trigger: state
+        entity_id: sensor.current_buy_electricity_price_15min
+        to: ["unavailable", "unknown"]
+        for:
+          minutes: 30
+    actions:
+      - action: mqtt.publish
+        data:
+          topic: nibepi/price/czk
+          payload: ""
           retain: true
     mode: single
 

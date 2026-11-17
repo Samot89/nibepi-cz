@@ -20,7 +20,14 @@ NibePi over MQTT. NibePi uses them to shift the heating curve and plan hot water
    | `sensor.current_spot_electricity_hour_order` | the hour's price rank (negative price boost only) |
    | `sensor.nibe_vvm320_temporary_lux_2` | your pump's register 48132 (negative price boost only) |
 
+   If you only have the spot price, compute the buy price in the templates as
+   spot × 1.21 (VAT) + your supplier's fee incl. VAT.
 3. Check the configuration and restart Home Assistant.
+
+NibePi ignores a price older than 60 minutes and then runs without price control
+(no curve shift from price, hot water Normal). The price automation therefore also
+republishes every 15 minutes, and a second automation clears the stored price when
+the price sensor has been unavailable for 30 minutes.
 4. In the NibePi dashboard open the electricity price tab, set the price source to
    *Home Assistant (MQTT)*, then set the price thresholds and the PV boost.
 
