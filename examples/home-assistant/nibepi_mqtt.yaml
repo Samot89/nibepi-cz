@@ -10,6 +10,9 @@
 #   nibepi/price/czk          aktuální nákupní cena, Kč/kWh
 #   nibepi/price/czk_hourly   hodinové ceny dnes + zítra pro VV-AI, [{startsAt, total}]
 #   nibepi/solar/surplus      průměrné FVE přetoky do sítě, W
+#   nibepi/price/thresholds/{very_cheap,cheap,normal,expensive}
+#                             volitelné: cenové prahy podle dne, mají přednost před prahy
+#                             zadanými v dashboardu NibePi
 #
 # Nahraďte ID entit svými:
 #   sensor.current_buy_electricity_price_15min  cena za kWh včetně poplatků,
@@ -114,6 +117,66 @@ automation:
             {% if acc.n > 0 %}{% set ns.out = ns.out + [{'startsAt': k, 'total': (acc.s / acc.n) | round(4)}] %}{% endif %}
             {% endfor %}
             {{ ns.out | tojson }}
+    mode: single
+
+  # Volitelné: cenové prahy podle dne. Z dnešních 15minutových cen spočítá percentily
+  # (nejlevnějších 20 % = velmi nízká, dalších 20 % = nízká, nejdražších 25 % = vysoká,
+  # nejdražších 10 % = velmi vysoká). Minima drží rozumné hranice: velmi nízká vždy
+  # pod 4,5 Kč a nízká vždy pod 6 Kč, vysoká nejdřív od 8 Kč a velmi vysoká nejdřív od 10 Kč.
+  # Každý den se tak přitápí v jeho nejlevnějších hodinách, v drahé sezóně i v levné.
+  # Zrušení: vypnout automatizaci a na 4 topicy poslat prázdný retained payload,
+  # NibePi se vrátí k prahům z dashboardu.
+  - id: nibepi_dynamic_price_thresholds
+    alias: "NibePi - cenové prahy podle dne -> MQTT"
+    triggers:
+      - trigger: time
+        at: "00:00:30"
+      - trigger: time_pattern
+        minutes: "5"
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: template
+        value_template: "{{ states('sensor.current_buy_electricity_price_15min') not in ['unknown', 'unavailable', 'None'] }}"
+    actions:
+      - variables:
+          pct_vc: 0.20
+          pct_c: 0.40
+          pct_n: 0.75
+          pct_e: 0.90
+          min_vc: 4.5
+          min_c: 6.0
+          min_n: 8.0
+          min_e: 10.0
+          # Šablona musí vrátit čistý seznam bez mezer okolo (proto pomlčky ve značkách),
+          # jinak by ji Home Assistant nevzal jako seznam, ale jako text.
+          prices: >-
+            {%- set a = states.sensor.current_buy_electricity_price_15min.attributes -%}
+            {%- set d = now().strftime('%Y-%m-%d') -%}
+            {%- set ns = namespace(v=[]) -%}
+            {%- for k in a.keys() if k is string and k[:10] == d and a[k] is number -%}
+            {%- set ns.v = ns.v + [a[k]] -%}
+            {%- endfor -%}
+            {{- ns.v | sort -}}
+      - condition: template
+        value_template: "{{ prices | count >= 48 }}"
+      - variables:
+          t_vc: "{{ ([prices[((prices | count - 1) * pct_vc) | round | int], min_vc] | max) | round(2) }}"
+          t_c_raw: "{{ ([prices[((prices | count - 1) * pct_c) | round | int], min_c] | max) | round(2) }}"
+          t_n_raw: "{{ ([prices[((prices | count - 1) * pct_n) | round | int], min_n] | max) | round(2) }}"
+          t_e_raw: "{{ ([prices[((prices | count - 1) * pct_e) | round | int], min_e] | max) | round(2) }}"
+      - variables:
+          t_c: "{{ ([t_c_raw | float, t_vc | float + 0.01] | max) | round(2) }}"
+          t_n: "{{ ([t_n_raw | float, t_c_raw | float + 0.02] | max) | round(2) }}"
+          t_e: "{{ ([t_e_raw | float, t_n_raw | float + 0.03] | max) | round(2) }}"
+      - action: mqtt.publish
+        data: {topic: nibepi/price/thresholds/very_cheap, payload: "{{ t_vc }}", retain: true}
+      - action: mqtt.publish
+        data: {topic: nibepi/price/thresholds/cheap, payload: "{{ t_c }}", retain: true}
+      - action: mqtt.publish
+        data: {topic: nibepi/price/thresholds/normal, payload: "{{ t_n }}", retain: true}
+      - action: mqtt.publish
+        data: {topic: nibepi/price/thresholds/expensive, payload: "{{ t_e }}", retain: true}
     mode: single
 
   - id: nibepi_pv_surplus_mqtt
