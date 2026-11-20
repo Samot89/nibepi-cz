@@ -206,6 +206,24 @@ gateway has to accept them. With
 Docker host's address must appear in the `source:` list, and `read_port` /
 `write_port` must be `10000` / `10001` to match.
 
+### Optional: restart on low memory (Pi Zero 2 W)
+
+Node-RED keeps a large part of its memory in swap, and on a Pi Zero 2 W (512 MB
+RAM) swap use can creep up over weeks. A daily check at 03:30 restarts the
+container **only when swap use is above 85 %**; otherwise it just logs that no
+restart was needed:
+
+```sh
+./scripts/install_restart_timer.sh
+sudo DRY_RUN=1 ./scripts/nibepi_restart.sh    # test without restarting
+```
+
+Before restarting it waits (up to 60 min) until the pump is not heating hot water.
+The short Modbus gap makes the pump raise alarm 251, which NibePi resets by itself
+after start; the script only waits for it to clear and never resets any other
+alarm. Log: `/opt/nibepi/tmp/restart.log`; change the limit with
+`SWAP_LIMIT_PCT=90 ./scripts/install_restart_timer.sh`.
+
 ## NIBEPI_DOCKER
 
 The image sets `NIBEPI_DOCKER=1`. Without it the core assumes a bare Raspberry Pi

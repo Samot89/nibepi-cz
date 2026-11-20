@@ -138,6 +138,23 @@ cd /opt/nibepi/src/nibepi-cz && git pull
 sudo docker build -t nibepi-nodered . && ./scripts/run_nibepi.sh
 ```
 
+### Volitelně: restart při nedostatku paměti (Pi Zero 2 W)
+
+Node-RED drží velkou část paměti ve swapu a na Pi Zero 2 W (512 MB RAM) se
+využití swapu může během týdnů pomalu zvyšovat. Denní kontrola ve 3:30 kontejner
+restartuje **jen tehdy, když je swap využitý nad 85 %**, jinak jen zapíše do logu,
+že restart není potřeba:
+
+```sh
+./scripts/install_restart_timer.sh
+sudo DRY_RUN=1 ./scripts/nibepi_restart.sh    # zkouška bez restartu
+```
+
+Před restartem počká (max. 60 min), až čerpadlo neohřívá TUV. Krátký výpadek
+Modbusu vyvolá na čerpadle alarm 251, který NibePi po startu sám potvrdí; skript
+jen počká, až zmizí. Jiné alarmy nepotvrzuje. Log je v `/opt/nibepi/tmp/restart.log`,
+mez jde změnit `SWAP_LIMIT_PCT=90 ./scripts/install_restart_timer.sh`.
+
 ### Přechod ze starého NibePi
 
 - Starý config se dá zkopírovat: `./scripts/run_nibepi.sh --copy-config pi@<stare-pi>`.
