@@ -56,6 +56,12 @@ forku nepodílejí, chyby proto prosím nehlaste u nich.
 - **Předpověď z Open-Meteo.** SMHI pokrývá jen Skandinávii, prognózní regulace
   proto bere předpověď z Open-Meteo.
 - **Čeština v dashboardu.**
+- **Klidnější řízení podle pokojové teploty.** Při větrání (pokles o 1 °C a víc
+  za 15 minut) se drží posun z doby před poklesem, dokud se pokoj nevrátí, nejvýš
+  hodinu; posun podle pokojové teploty je omezený na ±4. Dřív větrání u čidla
+  vytočilo křivku až na +10 a setrvačná podlahovka pak přetápěla.
+- **Pojistky ceny.** Cena starší než 60 minut se nepoužije (posun 0, TUV Normal),
+  snížení kvůli ceně se drží aspoň hodinu, režim TUV taky.
 - Opravy: pokojová čidla z HA `mqtt_statestream` (`homeassistant/sensor/<entita>/state`)
   jádro zahazovalo; po vypnutí řízení VV-AI zůstala perioda TUV v čerpadle na 0
   a TUV se neohřívala.

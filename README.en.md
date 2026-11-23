@@ -60,6 +60,12 @@ The full history of all upstream repositories is kept (merged with
 - **Open-Meteo forecast.** SMHI only covers Scandinavia; forecast control now
   uses Open-Meteo.
 - **Czech dashboard** (Settings → Language → Čeština).
+- **Calmer room temperature control.** On airing (a drop of 1 °C or more within
+  15 minutes) the offset from before the drop is kept until the room recovers, for
+  at most an hour, and the room part of the offset is limited to ±4. Before, airing
+  next to the sensor pushed the curve to +10 and an inert floor heating overheated.
+- **Price safeguards.** A price older than 60 minutes is not used (no price shift,
+  hot water Normal); a price reduction and the hot water mode are held at least an hour.
 - Fixes: room sensors fed by HA `mqtt_statestream` (`homeassistant/sensor/<entity>/state`)
   were dropped by the core; switching VV-AI control off left the pump's hot water
   period at 0, so no hot water was made.

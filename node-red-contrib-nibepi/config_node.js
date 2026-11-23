@@ -3041,6 +3041,39 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
 
     }
     const indoorArray = [];
+    // Room regulation guards. The offset is (setpoint - room) * factor, so airing next to
+    // the room sensor (-4 °C in 30 min) drove it to +10 and overheated an inert floor.
+    //  - airing: a drop of INDOOR_AIRING_DROP or more within INDOOR_AIRING_WINDOW_MS keeps
+    //    the offset from before the drop until the room is back within
+    //    INDOOR_AIRING_RECOVER of where it was, at most INDOOR_AIRING_HOLD_MS;
+    //  - the room part of the offset never goes beyond +/- INDOOR_OFFSET_MAX.
+    const INDOOR_OFFSET_MAX = 4;
+    const INDOOR_AIRING_DROP = 1.0; // °C
+    const INDOOR_AIRING_RECOVER = 0.3; // °C
+    const INDOOR_AIRING_WINDOW_MS = 15 * 60000;
+    const INDOOR_AIRING_HOLD_MS = 60 * 60000;
+    let indoorRecent = {};
+    let indoorAiring = {};
+    function indoorAiringHold(system, temp, now) {
+        const recent = (indoorRecent[system] || []).filter(r => now - r.t <= INDOOR_AIRING_WINDOW_MS);
+        recent.push({t: now, v: temp});
+        indoorRecent[system] = recent;
+        let airing = indoorAiring[system];
+        if(airing===undefined) {
+            const peak = Math.max(...recent.map(r => r.v));
+            if(peak - temp < INDOOR_AIRING_DROP) return undefined;
+            airing = {start: now, ref: peak, offset: indoorOffset[system] || 0};
+            indoorAiring[system] = airing;
+            nibe.log(`Vetrani ${system}: pokoj ${peak} -> ${temp} °C, drzim posun ${airing.offset}`,'indoor','debug');
+        }
+        if(temp >= airing.ref - INDOOR_AIRING_RECOVER || now - airing.start > INDOOR_AIRING_HOLD_MS) {
+            delete indoorAiring[system];
+            indoorRecent[system] = [{t: now, v: temp}];
+            nibe.log(`Vetrani ${system} skoncilo (${temp} °C)`,'indoor','debug');
+            return undefined;
+        }
+        return airing.offset;
+    }
     const runIndoor = (data,array) => {
         var timeNow = Date.now();
         //let data = Object.assign({}, result);
@@ -3125,6 +3158,9 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
         }
             if(conf.indoor['enable_'+data.system]!==undefined && conf.indoor['enable_'+data.system]===true) {
                 var setOffset = Number((((inside_set.data)-inside.data)*factor.data).toFixed(2));
+                const held = indoorAiringHold(data.system, inside.data, timeNow);
+                if(held!==undefined) setOffset = held;
+                setOffset = Math.max(-INDOOR_OFFSET_MAX, Math.min(INDOOR_OFFSET_MAX, setOffset));
                 data.indoorOffset = setOffset;
                 indoorOffset[data.system] = setOffset;
                 curveAdjust('indoor',data.system,setOffset);
