@@ -62,6 +62,10 @@ forku nepodílejí, chyby proto prosím nehlaste u nich.
   vytočilo křivku až na +10 a setrvačná podlahovka pak přetápěla.
 - **Pojistky ceny.** Cena starší než 60 minut se nepoužije (posun 0, TUV Normal),
   snížení kvůli ceně se drží aspoň hodinu, režim TUV taky.
+- **Méně zápisů do čerpadla.** Posun křivky se zapíše nejvýš jednou za hodinu,
+  aby změny ceny a pokojové teploty krátce po sobě nepřepisovaly nastavení dvakrát.
+  Hned se zapíše přetok z FVE (i jeho konec), zvýšení, když je pokoj o 0,5 °C
+  a víc pod nastavenou teplotou, a změna o 3 a víc.
 - Opravy: pokojová čidla z HA `mqtt_statestream` (`homeassistant/sensor/<entita>/state`)
   jádro zahazovalo; po vypnutí řízení VV-AI zůstala perioda TUV v čerpadle na 0
   a TUV se neohřívala.

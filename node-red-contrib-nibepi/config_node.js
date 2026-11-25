@@ -2160,6 +2160,16 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
         });
     }
     let timer = {};
+    // cz.6: the curve offset (47011) is a pump setting. Price, room and forecast each
+    // change it on their own clock, so it used to be written twice within minutes.
+    // Keep at least 60 min between writes; a step of 3 or more goes through at once.
+    const CURVE_MIN_WRITE_MS = 60 * 60000;
+    const CURVE_BIG_STEP = 3;
+    let curveLastWrite = {};
+    let curveRetry = {};
+    // FVE surplus is used at once: no write limit while it heats, nor for the write after it ends.
+    let curveSolarActive = false;
+    let curveSolarEnded = false;
     function updateConfig(category,parameter,data) {
         let config = nibe.getConfig();
         if(config[category]!==undefined && config[category][parameter]!==undefined) {
@@ -2218,6 +2228,29 @@ vvLastAiControl = (hw.enable_vv_ai_control === true);
                                 }
                                 if(out>10) out = 10;
                                 if(out<-10) out = -10;
+                                const target = Math.round(out);
+                                const wantsWrite = (out>(result.data+0.75) || out<(result.data-0.75)) && result.data!==target;
+                                const sinceLast = Date.now() - (curveLastWrite[system] || 0);
+                                const solarBypass = curveSolarActive || curveSolarEnded;
+                                // Comfort first: raising while the room is clearly below the setpoint is never delayed.
+                                const indoorPart = (adjust[i].data.find(d => d.name==='indoor') || {}).data || 0;
+                                const comfortBypass = target > result.data && indoorPart >= 1;
+                                if(wantsWrite && !solarBypass && !comfortBypass &&sinceLast < CURVE_MIN_WRITE_MS && Math.abs(target-result.data) < CURVE_BIG_STEP) {
+                                    if(curveRetry[system]===undefined) {
+                                        const wait = CURVE_MIN_WRITE_MS - sinceLast + 1000;
+                                        nibe.log(`Posun ${system} ${result.data} -> ${target} odlozen o ${Math.round(wait/60000)} min (min. odstup zapisu)`,'price','debug');
+                                        curveRetry[system] = setTimeout(() => {
+                                            curveRetry[system] = undefined;
+                                            const a = adjust.find(x => x.system===system);
+                                            if(a && a.data.length) curveAdjust(a.data[0].name, system, a.data[0].data);
+                                        }, wait);
+                                    }
+                                    return;
+                                }
+                                if(wantsWrite) {
+                                    curveLastWrite[system] = Date.now();
+                                    if(!curveSolarActive) curveSolarEnded = false;
+                                }
                                 if(out>(result.data+0.75)) {
                                     out = Math.round(out);
                                     if(result.data!==(out)) {
@@ -4446,6 +4479,10 @@ try {
                     nibe.log(ha.solarEnable ? `FVE pretok nedostupny, pouzivam jen spot cenu` : `FVE boost vypnut`,'price','debug');
                 }
                 const isSummer = fveActive && outdoorTemp !== null && outdoorTemp >= summerThreshold;
+                // Surplus drives the curve offset: let it through the write limit, also once when it ends.
+                const heatSolar = fveActive && !isSummer;
+                if(curveSolarActive && !heatSolar) curveSolarEnded = true;
+                curveSolarActive = heatSolar;
                 if(isSummer) {
                     // Letni rezim: FVE boost jen pro TUV, topeni zustava na zakladni spot cene
                     delete data.price_level;

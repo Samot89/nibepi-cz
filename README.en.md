@@ -66,6 +66,10 @@ The full history of all upstream repositories is kept (merged with
   next to the sensor pushed the curve to +10 and an inert floor heating overheated.
 - **Price safeguards.** A price older than 60 minutes is not used (no price shift,
   hot water Normal); a price reduction and the hot water mode are held at least an hour.
+- **Fewer writes to the pump.** The curve offset is written at most once an hour,
+  so a price change and a room change minutes apart no longer rewrite the setting
+  twice. Written at once: FVE surplus (and its end), a raise while the room is
+  0.5 °C or more below the setpoint, and a step of 3 or more.
 - Fixes: room sensors fed by HA `mqtt_statestream` (`homeassistant/sensor/<entity>/state`)
   were dropped by the core; switching VV-AI control off left the pump's hot water
   period at 0, so no hot water was made.
